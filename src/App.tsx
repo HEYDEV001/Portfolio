@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
+import { LiquidMetalButton } from '@/components/ui/liquid-metal-button'
 
 type ProjectTag = 'Product' | 'Web' | 'Mobile' | 'AI'
 
@@ -261,9 +262,10 @@ function App() {
             </a>
           ))}
         </nav>
-        <a className="cta" href="#connect">
-          Start a project
-        </a>
+        <LiquidMetalButton
+          label="Start a project"
+          onClick={() => window.location.assign('#connect')}
+        />
       </header>
 
       <main>
@@ -278,25 +280,21 @@ function App() {
               engineering execution.
             </p>
             <div className="hero-actions">
-              <a className="button primary" href="#projects">
-                Explore my work
-              </a>
-              <a className="button ghost" href="#resume">
-                View resume
-              </a>
+              <LiquidMetalButton label="Explore my work" onClick={() => window.location.assign('#projects')} />
+              <LiquidMetalButton label="View resume" onClick={() => window.location.assign('#resume')} />
             </div>
             <div className="hero-metrics">
-              <div>
-                <p className="metric">8+</p>
-                <p>Years of experience</p>
+              <div className="metric">
+                <p className="metricTime">8+</p>
+                <p className="metricName">Years of experience</p>
               </div>
-              <div>
-                <p className="metric">30+</p>
-                <p>Products shipped</p>
+              <div className="metric">
+                <p className="metricTime">30+</p>
+                <p className="metricName">Products shipped</p>
               </div>
-              <div>
-                <p className="metric">12</p>
-                <p>Design systems launched</p>
+              <div className="metric">
+                <p className="metricTime">12</p>
+                <p className="metricName">Design systems launched</p>
               </div>
             </div>
           </div>
@@ -462,7 +460,7 @@ function App() {
               <h3>Direct contact</h3>
               <p>Available for select freelance and product engagements.</p>
               <div className="contact-actions">
-                <button className="button primary" onClick={handleCopy}>
+                <button className="button copyEmail " onClick={handleCopy}>
                   {copied ? 'Email copied' : 'Copy email'}
                 </button>
                 <a className="button ghost" href="mailto:hello@yourdomain.com">

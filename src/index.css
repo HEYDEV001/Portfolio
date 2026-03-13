@@ -1,16 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --bg: #fff8ee;
-  --surface: #fff;
-  --surface-strong: #1d1b16;
-  --text-strong: #1f1d19;
-  --text-muted: #5e5a54;
-  --accent: #0f8a80;
-  --accent-soft: rgba(15, 138, 128, 0.12);
-  --border: rgba(31, 29, 25, 0.12);
-  --shadow-soft: 0 18px 40px rgba(31, 29, 25, 0.08);
-  --shadow-strong: 0 20px 45px rgba(31, 29, 25, 0.2);
+  /* Theme: ONLY these hex colors */
+  --bg: #f7f7f7;
+  --surface: #f4f9fc;
+  --surface-strong: #101010;
+  --text-strong: #191919;
+  --text-muted: #595959;
+  --accent: #641f09;
+
+  /* Derived values (same colors w/ opacity) */
+  --accent-soft: rgba(100, 31, 9, 0.12);
+  --border: rgba(25, 25, 25, 0.12);
+  --shadow-soft: 0 18px 40px rgba(16, 16, 16, 0.08);
+  --shadow-strong: 0 20px 45px rgba(16, 16, 16, 0.22);
+
   --heading: 'Fraunces', serif;
   --body: 'Space Grotesk', sans-serif;
   --mx: 50vw;
@@ -39,14 +47,10 @@ body::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(
-      620px circle at var(--mx) var(--my),
-      rgba(15, 138, 128, 0.35),
-      transparent 65%
-    ),
-    radial-gradient(880px circle at 10% 20%, rgba(255, 209, 170, 0.6), transparent 62%),
-    radial-gradient(980px circle at 90% 12%, rgba(255, 244, 214, 0.9), transparent 60%);
-  transition: background 520ms cubic-bezier(0.16, 0.84, 0.27, 1);
+    radial-gradient(680px circle at var(--mx) var(--my), rgba(100, 31, 9, 0.22), transparent 62%),
+    radial-gradient(900px circle at 12% 16%, rgba(244, 249, 252, 0.95), transparent 62%),
+    radial-gradient(1000px circle at 92% 12%, rgba(25, 25, 25, 0.08), transparent 58%);
+  transition: background 650ms cubic-bezier(0.16, 0.84, 0.27, 1);
 }
 
 #root {
@@ -75,5 +79,5 @@ img {
 }
 
 ::selection {
-  background: rgba(15, 138, 128, 0.2);
+  background: rgba(100, 31, 9, 0.18);
 }

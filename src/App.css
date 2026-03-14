@@ -14,12 +14,12 @@
   justify-content: space-between;
   padding: 20px 6vw;
   /*backdrop-filter: blur(16px);*/
-  /*border-bottom: 1px solid rgba(31, 29, 25, 0.08);*/
-  background: rgba(320, 320, 320, 0.0); /* semi-transparent white */
+  /*border-bottom: 1px solid rgba(0, 0, 0, 0.08);*/
+  background: rgba(255, 255, 255, 0.0);
   backdrop-filter: blur(10px);           /* blur effect behind the navbar */
   -webkit-backdrop-filter: blur(10px);   /* Safari support */
   border-radius: 12px;                   /* smooth rounded corners */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for depth */
+  border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* soft shadow */   /* spacing inside navbar */
 
 }
@@ -76,7 +76,7 @@
 .nav-links a:hover,
 .nav-links a.active {
   color: var(--text-strong);
-  background: rgba(244, 249, 252, 0.9);
+  background: rgba(122, 59, 46, 0.12);
   transform: translateY(-1px);
 }
 
@@ -88,7 +88,7 @@
   color: var(--surface);
   font-weight: 600;
   font-size: 14px;
-  box-shadow: 0 18px 40px rgba(31, 29, 25, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
   transition:
     transform 900ms cubic-bezier(0.16, 0.84, 0.27, 1),
     box-shadow 900ms cubic-bezier(0.16, 0.84, 0.27, 1);
@@ -96,7 +96,7 @@
 
 .cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 24px 60px rgba(31, 29, 25, 0.24);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
 }
 
 main {
@@ -185,13 +185,13 @@ section.is-visible {
 .button.primary {
   background: var(--accent);
   color: var(--surface);
-  box-shadow: 0 18px 40px rgba(31, 29, 25, 0.2);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
 }
 
 .button:not(.primary):not(.ghost) {
   background: var(--surface);
-  color: var(--text-muted);
-  border: 1px solid rgba(25, 25, 25, 0.12);
+  color: var(--text-on-light);
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .button.copyEmail{
@@ -202,12 +202,12 @@ section.is-visible {
 .button.ghost {
   background: transparent;
   color: var(--text-muted);
-  border: 1px solid rgba(31, 29, 25, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 .button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 22px 55px rgba(31, 29, 25, 0.25);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.25);
 }
 
 .hero-metrics {
@@ -220,10 +220,10 @@ section.is-visible {
   font-size: 26px;
   font-family: var(--heading);
   margin: 0 0 4px;
-  border-radius: 20px;
+  border-radius: 40px;
   padding: 16px;
-  box-shadow: 0 22px 52px rgba(31, 29, 25, 0.26);
-  background-color: #641F09;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  background-color: var(--accent);
   color: white;
 
   transition:
@@ -232,17 +232,16 @@ section.is-visible {
     background-color 220ms cubic-bezier(0.16, 0.84, 0.27, 0.5);
 }
 .metric:hover {
-  transform: translateY(-2px);
-  background: #E3DBD5;
-  border-radius: 20px;
-  box-shadow: 0 18px 40px rgba(31, 29, 25, 0.06);
-  color: #641F09;
+  transform: translateY(4px);
+  background: var(--surface);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+  color: var(--accent);
 
   .metricName{
-    color: #641F09;
+    color: var(--accent);
   }
   .metricTime{
-    color: #641F09;
+    color: var(--accent);
   }
 }
 .metricName {
@@ -267,9 +266,9 @@ section.is-visible {
   inset: -40px 20px auto auto;
   width: 220px;
   height: 220px;
-  background: radial-gradient(circle at 30% 30%, var(--surface) 0%, rgba(244, 249, 252, 0) 70%),
-    radial-gradient(circle at 70% 70%, rgba(100, 31, 9, 0.35), rgba(100, 31, 9, 0) 70%),
-    radial-gradient(circle at 30% 70%, rgba(25, 25, 25, 0.22), rgba(25, 25, 25, 0) 70%);
+  background: radial-gradient(circle at 30% 30%, var(--surface) 0%, rgba(224, 236, 251, 0) 70%),
+    radial-gradient(circle at 70% 70%, rgba(122, 59, 46, 0.35), rgba(122, 59, 46, 0) 70%),
+    radial-gradient(circle at 30% 70%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 70%);
   border-radius: 50%;
   filter: blur(4px);
   opacity: 0.9;
@@ -277,10 +276,16 @@ section.is-visible {
 }
 
 .stack-card {
+  position: relative;
+  overflow: hidden;
   background: var(--surface);
-  border-radius: 24px;
+  border-radius: 48px;
   padding: 24px;
-  box-shadow: 0 18px 40px rgba(31, 29, 25, 0.08);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+  z-index: 1;
+}
+
+.stack-card-inner {
   position: relative;
   z-index: 1;
 }
@@ -290,12 +295,16 @@ section.is-visible {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: var(--text-muted);
+  color: var(--text-on-light-muted);
 }
 
 .stack-card h3 {
   margin: 8px 0 12px;
-  color: var(--text-strong);
+  color: var(--text-on-light);
+}
+
+.stack-card p {
+  color: var(--text-on-light-muted);
 }
 
 .chip-row {
@@ -315,16 +324,16 @@ section.is-visible {
 .floating-panel {
   margin-left: 60px;
   padding: 18px 20px;
-  border-radius: 20px;
+  border-radius: 48px;
   background: var(--surface);
-  color: var(--text-strong);
+  color: var(--text-on-light);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
   animation: float 4s cubic-bezier(0.37, 0.01, 0.17, 1) infinite;
 }
 
 .progress {
   height: 6px;
-  background: #D7C3BC;
+  background: var(--surface-alt);
   border-radius: 999px;
   overflow: hidden;
   margin: 12px 0 8px;
@@ -333,7 +342,7 @@ section.is-visible {
 .progress span {
   display: block;
   height: 100%;
-  background:#641F09;
+  background:var(--accent);
   border-radius: 999px;
 }
 
@@ -358,9 +367,9 @@ section.is-visible {
 }
 
 .filters button {
-  border: 1px solid rgba(31, 29, 25, 0.16);
-  background: rgba(244, 249, 252, 0.7);
-  color: var(--text-muted);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: rgba(201, 167, 154, 0.35);
+  color: var(--text-on-light-muted);
   padding: 8px 16px;
   border-radius: 999px;
   cursor: pointer;
@@ -374,9 +383,9 @@ section.is-visible {
 
 .filters button.active,
 .filters button:hover {
-  color: var(--text-strong);
+  color: var(--text-on-light);
   border-color: var(--accent);
-  background: rgba(100, 31, 9, 0.08);
+  background: rgba(122, 59, 46, 0.08);
   transform: translateY(-1px);
 }
 
@@ -388,14 +397,16 @@ section.is-visible {
 }
 
 .project-card {
-  background: #E3DBD5;
-  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: 48px;
   padding: 22px;
-  box-shadow: 0 18px 40px rgba(31, 29, 25, 0.06);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
   display: grid;
   gap: 12px;
   min-height: 260px;
-  color: #641F09;
+  color: var(--accent);
   transition:
     transform 1000ms cubic-bezier(0.16, 0.84, 0.27, 1),
     box-shadow 1000ms cubic-bezier(0.16, 0.84, 0.27, 1),
@@ -405,8 +416,8 @@ section.is-visible {
 
 .project-card:hover {
   transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 22px 52px rgba(31, 29, 25, 0.26);
-  background-color: #641F09;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.26);
+  background-color: var(--accent);
   color: white;
 }
 
@@ -419,7 +430,14 @@ section.is-visible {
 }
 
 .project-card:hover .stack span {
-  background: rgba(244, 249, 252, 0.14);
+  background: rgba(224, 236, 251, 0.14);
+}
+
+.project-card-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
 }
 
 .card-top {
@@ -429,7 +447,7 @@ section.is-visible {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--text-muted);
+  color: var(--text-on-light-muted);
 }
 
 .tag {
@@ -438,7 +456,7 @@ section.is-visible {
   background: var(--accent-soft);
   color: #FFFFFF;
   font-weight: 600;
-  background-color: #641F09;
+  background-color: var(--accent);
 }
 
 .year {
@@ -468,7 +486,7 @@ section.is-visible {
 
 .card-actions a {
   text-decoration: none;
-  color: var(--text-strong);
+  color: var(--text-on-light);
   font-weight: 600;
 }
 
@@ -489,10 +507,11 @@ section.is-visible {
 
 .resume-tabs button {
   text-align: left;
-  border-radius: 14px;
+  border-radius: 28px;
   padding: 14px 16px;
-  border: 1px solid rgba(31, 29, 25, 0.16);
-  background: rgba(244, 249, 252, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: rgba(201, 167, 154, 0.35);
+  color: var(--text-on-light);
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
@@ -506,24 +525,41 @@ section.is-visible {
 .resume-tabs button.active,
 .resume-tabs button:hover {
   border-color: var(--accent);
-  background: rgba(100, 31, 9, 0.08);
-  box-shadow: 0 14px 36px rgba(31, 29, 25, 0.18);
+  background: rgba(122, 59, 46, 0.08);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18);
   transform: translateY(-2px);
 }
 
 .resume-cta {
   margin-top: 16px;
   padding: 16px;
-  border-radius: 16px;
+  border-radius: 32px;
   background: var(--surface);
-  box-shadow: 0 12px 30px rgba(31, 29, 25, 0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  color: var(--text-on-light);
+}
+
+.resume-cta p {
+  color: var(--text-on-light-muted);
+}
+
+.resume-cta .button.ghost {
+  color: var(--accent);
+  border-color: rgba(122, 59, 46, 0.5);
 }
 
 .resume-panel {
+  position: relative;
+  overflow: hidden;
   background: var(--surface);
-  border-radius: 24px;
+  border-radius: 48px;
   padding: 28px;
-  box-shadow: 0 18px 45px rgba(31, 29, 25, 0.08);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+}
+
+.resume-panel-inner {
+  position: relative;
+  z-index: 1;
 }
 
 .timeline {
@@ -548,12 +584,12 @@ section.is-visible {
   height: 10px;
   border-radius: 999px;
   background: var(--accent);
-  box-shadow: 0 0 0 6px rgba(100, 31, 9, 0.15);
+  box-shadow: 0 0 0 6px rgba(122, 59, 46, 0.15);
 }
 
 .timeline-summary {
   font-size: 14px;
-  color: var(--text-muted);
+  color: var(--text-on-light-muted);
 }
 
 .timeline-item ul {
@@ -561,7 +597,7 @@ section.is-visible {
   padding-left: 18px;
   display: grid;
   gap: 6px;
-  color: var(--text-muted);
+  color: var(--text-on-light-muted);
 }
 
 .skills,
@@ -575,7 +611,7 @@ section.is-visible {
   padding-left: 18px;
   display: grid;
   gap: 4px;
-  color: var(--text-muted);
+  color: var(--text-on-light-muted);
 }
 
 .education-item {
@@ -585,7 +621,7 @@ section.is-visible {
 
 .education-meta {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--text-on-light-muted);
 }
 
 .connect-grid {
@@ -595,21 +631,36 @@ section.is-visible {
   gap: 24px;
 }
 
+
 .contact-card {
-  background: var(--surface-strong);
+  position: relative;
+  overflow: hidden;
+  background: var(--accent);
   color: var(--surface);
-  border-radius: 24px;
+  border-radius: 48px;
   padding: 28px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  margin-top: 25px;
+}
+.contact-card:hover {
+  transform: translateY(10px) ;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
 }
 
+.contact-card-inner {
+  color: var(--surface);
+  position: relative;
+  z-index: 1;
+}
+
+
 .contact-card p {
-  color: rgba(244, 249, 252, 0.84);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .contact-card .button.ghost {
   color: var(--surface);
-  border-color: rgba(244, 249, 252, 0.55);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .contact-actions {
@@ -637,13 +688,17 @@ section.is-visible {
 }
 
 .social-card {
-  padding: 18px 20px;
-  border-radius: 20px;
-  border: 1px solid rgba(31, 29, 25, 0.12);
+  margin-top: 25px;
+  position: relative;
+  overflow: hidden;
+  padding: 25px 20px;
+  border-radius: 48px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   background: var(--surface);
   text-decoration: none;
-  color: var(--text-strong);
+  color: var(--text-on-light);
   display: grid;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
   grid-template-columns: 1fr auto;
   gap: 6px 10px;
   transition:
@@ -656,14 +711,24 @@ section.is-visible {
 
 .social-card small {
   grid-column: 1 / -1;
-  color: var(--text-muted);
+  color: var(--text-on-light-muted);
+}
+
+.social-card-inner {
+  position: relative;
+  z-index: 1;
 }
 
 .social-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 18px 40px rgba(31, 29, 25, 0.12);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
   background: var(--bg);
-  border-color: rgba(31, 29, 25, 0.22);
+  border-color: rgba(0, 0, 0, 0.22);
+  color: var(--text-strong);
+}
+
+.social-card:hover small {
+  color: var(--text-muted);
 }
 
 .arrow {
@@ -673,7 +738,7 @@ section.is-visible {
 
 .footer {
   padding: 32px 6vw 48px;
-  border-top: 1px solid rgba(31, 29, 25, 0.08);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -691,6 +756,9 @@ section.is-visible {
   text-decoration: none;
 }
 
+/* GlowingEffect - cursor-following radial spotlight */
+/* (glowing card effect removed) */
+
 @keyframes float {
   0%,
   100% {
@@ -700,6 +768,7 @@ section.is-visible {
     transform: translateY(-12px);
   }
 }
+
 
 @media (max-width: 1024px) {
   .nav {

@@ -188,6 +188,16 @@ function App() {
   const [resumeTab, setResumeTab] = useState<ResumeTab>('Experience')
   const [copied, setCopied] = useState(false)
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText('hello@yourdomain.com')
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1500)
+    } catch {
+      setCopied(false)
+    }
+  }
+
   const filteredProjects = useMemo(() => {
     if (filter === 'All') return projects
     return projects.filter((project) => project.tag === filter)
@@ -225,16 +235,6 @@ function App() {
     window.addEventListener('mousemove', handleMove)
     return () => window.removeEventListener('mousemove', handleMove)
   }, [])
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText('hello@yourdomain.com')
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 1500)
-    } catch {
-      setCopied(false)
-    }
-  }
 
   return (
     <div className="app">
@@ -301,15 +301,17 @@ function App() {
           <div className="hero-visual">
             <div className="orb"></div>
             <div className="stack-card">
-              <p className="label">Now working on</p>
-              <h3>Studio-grade onboarding flows</h3>
-              <p>
-                Streamlining enterprise onboarding with modular journeys and guided support.
-              </p>
-              <div className="chip-row">
-                <span>Research</span>
-                <span>Prototyping</span>
-                <span>Front-end</span>
+              <div className="stack-card-inner">
+                <p className="label">Now working on</p>
+                <h3>Studio-grade onboarding flows</h3>
+                <p>
+                  Streamlining enterprise onboarding with modular journeys and guided support.
+                </p>
+                <div className="chip-row">
+                  <span>Research</span>
+                  <span>Prototyping</span>
+                  <span>Front-end</span>
+                </div>
               </div>
             </div>
             <div className="floating-panel">
@@ -345,24 +347,26 @@ function App() {
           <div className="project-grid">
             {filteredProjects.map((project) => (
               <article key={project.title} className="project-card">
-                <div className="card-top">
-                  <span className="tag">{project.tag}</span>
-                  <span className="year">{project.year}</span>
-                </div>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <div className="stack">
-                  {project.stack.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
-                </div>
-                <div className="card-actions">
-                  <a href={project.live} target="_blank" rel="noreferrer">
-                    Live demo
-                  </a>
-                  <a href={project.repo} target="_blank" rel="noreferrer">
-                    Source
-                  </a>
+                <div className="project-card-inner">
+                  <div className="card-top">
+                    <span className="tag">{project.tag}</span>
+                    <span className="year">{project.year}</span>
+                  </div>
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  <div className="stack">
+                    {project.stack.map((item) => (
+                      <span key={item}>{item}</span>
+                    ))}
+                  </div>
+                  <div className="card-actions">
+                    <a href={project.live} target="_blank" rel="noreferrer">
+                      Live demo
+                    </a>
+                    <a href={project.repo} target="_blank" rel="noreferrer">
+                      Source
+                    </a>
+                  </div>
                 </div>
               </article>
             ))}
@@ -395,6 +399,7 @@ function App() {
             </aside>
 
             <div className="resume-panel">
+              <div className="resume-panel-inner">
               {resumeTab === 'Experience' && (
                 <div className="timeline">
                   {experience.map((role) => (
@@ -445,6 +450,7 @@ function App() {
                   ))}
                 </div>
               )}
+              </div>
             </div>
           </div>
         </section>
@@ -455,49 +461,54 @@ function App() {
             <h2>Let&apos;s build something sharp, calm, and memorable.</h2>
           </div>
 
-          <div className="connect-grid">
-            <div className="contact-card">
-              <h3>Direct contact</h3>
-              <p>Available for select freelance and product engagements.</p>
-              <div className="contact-actions">
-                <button className="button copyEmail " onClick={handleCopy}>
-                  {copied ? 'Email copied' : 'Copy email'}
-                </button>
-                <a className="button ghost" href="mailto:hello@yourdomain.com">
-                  Send email
-                </a>
-              </div>
-              <div className="contact-details">
-                <p>
-                  <span>Email</span>
-                  hello@yourdomain.com
-                </p>
-                <p>
-                  <span>Location</span>
-                  Your city · Remote
-                </p>
-                <p>
-                  <span>Availability</span>
-                  Booking 2026
-                </p>
+          <div className="connect-grid" style={{ maxWidth: '1420px', margin: '0 auto', gap: '20px', display: 'grid', gridTemplateColumns: '1.1fr 1fr', alignItems: 'stretch' }}>
+            <div className="contact-card" style={{ gridRow: 'span 2', width: '100%' }}>
+              <div className="contact-card-inner">
+                <h3>Direct contact</h3>
+                <p>Available for select freelance and product engagements.</p>
+                <div className="contact-actions">
+                  <button className="button copyEmail" onClick={handleCopy}>
+                    {copied ? 'Email copied' : 'Copy email'}
+                  </button>
+                  <a className="button ghost" href="mailto:hello@yourdomain.com">
+                    Send email
+                  </a>
+                </div>
+                <div className="contact-details">
+                  <p>
+                    <span>Email</span>
+                    hello@yourdomain.com
+                  </p>
+                  <p>
+                    <span>Location</span>
+                    Your city · Remote
+                  </p>
+                  <p>
+                    <span>Availability</span>
+                    Booking 2026
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="socials">
+            <div className="socials" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridAutoRows: '1fr', gap: '16px', width: '100%' }}>
               {socials.map((social) => (
                 <a
                   key={social.name}
                   className="social-card"
+                  style={{ width: '100%', height: '100%' }}
                   href={social.url}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <div>
-                    <h3>{social.name}</h3>
-                    <p>{social.handle}</p>
+                  <div className="social-card-inner">
+                    <div>
+                      <h3>{social.name}</h3>
+                      <p>{social.handle}</p>
+                    </div>
+                    <span className="arrow">→</span>
+                    <small>{social.note}</small>
                   </div>
-                  <span className="arrow">→</span>
-                  <small>{social.note}</small>
                 </a>
               ))}
             </div>

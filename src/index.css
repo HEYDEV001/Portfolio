@@ -6,7 +6,7 @@
 
 :root {
   /* Palette: #81A6C6 #AACDDC #F3E3D0 #D2C4B4 */
-  --bg: linear-gradient(160deg, #aacddc 0%, #f3e3d0 40%, #d2c4b4 100%);
+  --bg: linear-gradient(150deg, #81a6c6 0%, #aacddc 35%, #f3e3d0 70%, #d2c4b4 100%);
   --surface: #ffffff;
   --surface-alt: #aacddc;
   --surface-strong: #81a6c6;
@@ -50,9 +50,9 @@ body::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(680px circle at var(--mx) var(--my), rgba(129, 166, 198, 0.18), transparent 62%),
-    radial-gradient(900px circle at 12% 16%, rgba(243, 227, 208, 0.9), transparent 62%),
-    radial-gradient(1000px circle at 92% 12%, rgba(210, 196, 180, 0.6), transparent 58%);
+    radial-gradient(720px circle at var(--mx) var(--my), rgba(129, 166, 198, 0.32), transparent 64%),
+    radial-gradient(980px circle at 12% 16%, rgba(129, 166, 198, 0.24), transparent 66%),
+    radial-gradient(1100px circle at 88% 8%, rgba(170, 205, 220, 0.32), transparent 60%);
   transition: background 650ms cubic-bezier(0.16, 0.84, 0.27, 1);
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { LiquidMetalButton } from '@/components/ui/liquid-metal-button'
+import { CursorSparkles } from '@/components/ui/cursor-sparkles'
 
 type ProjectTag = 'Product' | 'Web' | 'Mobile' | 'AI'
 
@@ -238,6 +239,7 @@ function App() {
 
   return (
     <div className="app">
+      <CursorSparkles />
       <header className="nav">
         <div className="brand">
           <span className="badge">Portfolio</span>

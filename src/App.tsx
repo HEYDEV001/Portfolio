@@ -244,8 +244,8 @@ function App() {
         <div className="brand">
           <span className="badge">Portfolio</span>
           <div>
-            <p className="brand-title">Your Name</p>
-            <p className="brand-sub">Product Designer + Frontend Engineer</p>
+            <p className="brand-title">Dev Pathak</p>
+            <p className="brand-sub">Backend + DevOps Engineer</p>
           </div>
         </div>
         <nav className="nav-links">

@@ -17,7 +17,7 @@
   --accent: #81a6c6;
 
   /* Derived values */
-  --accent-soft: rgba(129, 166, 198, 0.22);
+  --accent-soft: rgba(12, 42, 64, 0.22);
   --border: rgba(0, 0, 0, 0.08);
   --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.06);
   --shadow-strong: 0 20px 45px rgba(0, 0, 0, 0.12);

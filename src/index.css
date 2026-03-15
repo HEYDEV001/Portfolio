@@ -27,7 +27,7 @@
   --mx: 50vw;
   --my: 20vh;
 
-  font-family: var(--body);
+  font-family: 'Space Grotesk', sans-serif;
   color: var(--text-strong);
   background: var(--bg);
   scroll-behavior: smooth;
@@ -63,7 +63,7 @@ body::before {
 h1,
 h2,
 h3 {
-  font-family: var(--heading);
+  font-family: 'Fraunces', serif;
 }
 
 p {
@@ -73,7 +73,7 @@ p {
 }
 
 button {
-  font-family: var(--body);
+  font-family:'Space Grotesk', sans-serif;
 }
 
 img {

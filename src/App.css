@@ -14,11 +14,11 @@
   justify-content: space-between;
   padding: 20px 6vw;
   background: rgba(255, 255, 255, 0.0);
-  backdrop-filter: blur(10px);           /* blur effect behind the navbar */
-  -webkit-backdrop-filter: blur(10px);   /* Safari support */
-  border-radius: 12px;                   /* smooth rounded corners */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* soft shadow */   /* spacing inside navbar */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 
 }
 
@@ -43,7 +43,7 @@
 
 .brand-title {
   margin: 0;
-  font-family: var(--heading);
+  font-family: 'Fraunces', serif;
   font-size: 18px;
   color: var(--text-strong);
 }
@@ -216,7 +216,7 @@ section.is-visible {
 
 .metric {
   font-size: 26px;
-  font-family: var(--heading);
+  font-family: 'Fraunces', serif;
   margin: 0 0 4px;
   border-radius: 40px;
   padding: 16px;

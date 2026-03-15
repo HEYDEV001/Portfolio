@@ -7,7 +7,7 @@
 :root {
   /* Palette: #81A6C6 #AACDDC #F3E3D0 #D2C4B4 */
   --bg: linear-gradient(150deg, #81a6c6 0%, #aacddc 35%, #f3e3d0 70%, #d2c4b4 100%);
-  --surface: #ffffff;
+  --surface: #f6f5f5;
   --surface-alt: #aacddc;
   --surface-strong: #81a6c6;
   --text-strong: #000000;

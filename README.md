@@ -146,35 +146,21 @@ Portfolio/
 
 ## 🚧 Challenges & Optimisations
 
-### 1. Type Safety Across Dynamic Data
-**Challenge:** Maintaining strict TypeScript types across dynamically rendered project cards and resume skill categories led to type errors and prop-drilling issues during development.
-
-**Optimisation:** Centralised all content into typed data files (`src/data/projects.ts`) using well-defined TypeScript interfaces. This eliminated runtime surprises and made content updates a single-file change without touching component logic.
-
----
-
-### 2. Filter State Management Without a State Library
+### 1. Filter State Management Without a State Library
 **Challenge:** Implementing category-based project filtering (All / Product / Web / Backend / Full-stack) without introducing Redux or Zustand while keeping the component clean and performant.
 
 **Optimisation:** Used React's built-in `useState` hook with a derived filtered list computed via `useMemo`, avoiding unnecessary re-renders. The active filter badge provides instant visual feedback with zero external dependencies.
 
 ---
 
-### 3. Vite + TypeScript Configuration for Production
-**Challenge:** The default Vite + TypeScript scaffold required tuning for a production-grade setup — including proper `tsconfig` splits (`app` vs `node`), ESLint type-aware rules, and ensuring the build output was optimised for deployment.
-
-**Optimisation:** Split TypeScript configuration into `tsconfig.app.json` (browser target) and `tsconfig.node.json` (Vite tooling target). Enabled `tseslint.configs.recommendedTypeChecked` in ESLint for deeper static analysis, catching errors at lint time rather than runtime.
-
----
-
-### 4. Responsive Layout with Tailwind CSS
+### 2. Responsive Layout with Tailwind CSS
 **Challenge:** Achieving a consistent card-grid layout across widely varying viewport sizes — particularly the multi-column project cards and the skills grid — without writing custom media queries.
 
 **Optimisation:** Leveraged Tailwind's responsive utility prefixes (`sm:`, `md:`, `lg:`) with a mobile-first approach. Used CSS Grid and Flexbox utility classes to handle reflow gracefully, ensuring the layout collapses naturally on smaller screens without breakage.
 
 ---
 
-### 5. Performance-Conscious Asset Delivery
+### 3. Performance-Conscious Asset Delivery
 **Challenge:** Ensuring fast initial load times on Vercel without lazy-loading complexity while keeping the bundle size minimal.
 
 **Optimisation:** Vite's built-in code splitting and tree-shaking handles dead-code elimination automatically. Static assets are served from the `public/` directory with cache-friendly headers via Vercel's edge network, keeping Time-to-Interactive low.

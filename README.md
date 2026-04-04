@@ -1,73 +1,228 @@
-# React + TypeScript + Vite
+# Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **Personal portfolio website of Dev Pathak** — Backend + DevOps Engineer
 
-Currently, two official plugins are available:
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-portfolio--dev--pathak.vercel.app-blue?style=for-the-badge&logo=vercel)](https://portfolio-dev-pathak.vercel.app)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-65.5%25-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-32.5%25-38B2AC?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-Build%20Tool-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📸 Preview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Home | Projects |
+|------|----------|
+| ![Home Section](https://raw.githubusercontent.com/HEYDEV001/Portfolio/main/public/preview-home.png) | ![Projects Section](https://raw.githubusercontent.com/HEYDEV001/Portfolio/main/public/preview-projects.png) |
 
-## Expanding the ESLint configuration
+> **Note:** Screenshots below show the live portfolio in action.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🏠 Hero & Home
+![Home](./screenshots/home.png)
+*Landing page with hero tagline, current project widget, and key stats.*
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🗂️ Projects
+![Projects](./screenshots/projects.png)
+*Filterable project showcase with tech stack tags, live demos, and source links.*
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 📄 Resume — Technical Skills
+![Resume](./screenshots/resume.png)
+*Interactive resume page with skill categories and PDF download.*
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🤝 Connect
+![Connect](./screenshots/connect.png)
+*Contact section with direct email, social links, and availability status.*
+
+---
+
+## 🎯 Project Objective
+
+This portfolio was built to **professionally represent Dev Pathak** as a Backend + DevOps Engineer specialising in microservices, cloud-native architecture, containerised deployments, and resilient distributed systems.
+
+The core goals of this project are:
+
+- Present a clean, developer-focused personal brand with a polished UI
+- Showcase real-world backend and full-stack projects (Staylio, Sphere, ECom, Krishi-setu)
+- Provide a structured, downloadable resume with interactive skill categories
+- Offer a frictionless contact experience for recruiters and collaborators
+- Demonstrate frontend engineering capability using modern tooling (React, TypeScript, Tailwind, Vite)
+
+---
+
+## 🗂️ Project Structure
+
+```
+Portfolio/
+├── public/                     # Static assets served directly
+│   └── (favicon, icons, etc.)
+│
+├── src/                        # Application source code
+│   ├── components/             # Reusable UI components
+│   │   ├── Navbar.tsx          # Sticky navigation with active-link highlighting
+│   │   ├── Hero.tsx            # Landing section with headline & stats widgets
+│   │   ├── Projects.tsx        # Project cards with category filter
+│   │   ├── Resume.tsx          # Tabbed resume (Experience / Skills / Education)
+│   │   ├── Connect.tsx         # Contact section with social links
+│   │   └── Footer.tsx          # Footer with back-to-top & email shortcut
+│   │
+│   ├── data/                   # Static data / content config
+│   │   └── projects.ts         # Project entries (title, description, tags, links)
+│   │
+│   ├── types/                  # TypeScript interfaces & type definitions
+│   ├── App.tsx                 # Root component — page layout & routing
+│   ├── main.tsx                # React DOM entry point
+│   └── index.css               # Global styles & Tailwind directives
+│
+├── index.html                  # Vite HTML entry point
+├── vite.config.ts              # Vite configuration
+├── tailwind.config.js          # Tailwind CSS theme & content config
+├── postcss.config.js           # PostCSS pipeline config
+├── tsconfig.json               # Root TypeScript config
+├── tsconfig.app.json           # App-specific TS config
+├── tsconfig.node.json          # Node/Vite TS config
+├── eslint.config.js            # ESLint flat config with type-aware rules
+├── package.json                # Dependencies and scripts
+└── .gitignore
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ✨ Key Features
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🏠 Hero Section
+- Bold, developer-centric tagline with animated entrance
+- **"Now Working On"** live widget showing current project (Distributed Backend Systems) with tech stack tags
+- **Live prototype progress bar** widget (72% complete, 3 days left)
+- Key stats: 3rd year M.Tech (AI & DS) student, 3-month full-stack internship, 10+ projects built
+
+### 🗂️ Projects Showcase
+- **Filterable by category**: All / Product / Web / Backend / Full-stack
+- Four featured backend projects with descriptions, year, and tech stack tags:
+  | Project | Description |
+  |---|---|
+  | **Staylio** | Airbnb-style accommodation backend — property listings, bookings, auth, reservations |
+  | **Sphere** | Distributed professional networking backend — microservices, API gateway, containerised |
+  | **ECom** | Scalable e-commerce backend — product catalogs, order workflows, WebSocket, high-perf APIs |
+  | **Krishi-setu** | AI-powered agricultural assistance — ML API integration, microservices, farmer queries |
+- Each card links to **Live Demo** and **Source** repository
+
+### 📄 Interactive Resume
+- Three tabs: **Experience**, **Technical Skills**, **Education**
+- Visual skill category cards:
+  - Frontend: React.js, Next.js, TypeScript, JavaScript, HTML/CSS, Responsive UI
+  - Backend: Node.js, Express.js, Spring Boot, Spring AI, REST API, Microservices
+  - Databases & Caching: MongoDB, PostgreSQL, SQL, Redis
+  - DevOps & Cloud: Docker, Kubernetes, CI/CD, Containerised Deployments
+  - Distributed Systems: Apache Kafka, Event Streaming, Microservices Communication
+  - Programming: Java, C, C++, Data Structures
+- **One-click PDF resume download** via direct link
+
+### 🤝 Connect Section
+- Direct contact card with **Copy Email** and **Send Email** buttons
+- Social profile links: LinkedIn, GitHub, X (Twitter), Instagram
+- Availability status: **Remote**, Location: Indore (M.P.), IN
+
+### 🎨 Design & UX
+- Soft blue-grey gradient theme with consistent card-based layout
+- Fully **responsive** across desktop and mobile viewports
+- Smooth scroll navigation with **active tab highlighting**
+- **"Start a project"** CTA button persistent in the navbar
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| UI Framework | React 18 |
+| Language | TypeScript (65.5%) |
+| Styling | Tailwind CSS (32.5%) |
+| Build Tool | Vite |
+| Linting | ESLint (flat config, type-aware) |
+| Deployment | Vercel |
+
+---
+
+## 🚧 Challenges & Optimisations
+
+### 1. Type Safety Across Dynamic Data
+**Challenge:** Maintaining strict TypeScript types across dynamically rendered project cards and resume skill categories led to type errors and prop-drilling issues during development.
+
+**Optimisation:** Centralised all content into typed data files (`src/data/projects.ts`) using well-defined TypeScript interfaces. This eliminated runtime surprises and made content updates a single-file change without touching component logic.
+
+---
+
+### 2. Filter State Management Without a State Library
+**Challenge:** Implementing category-based project filtering (All / Product / Web / Backend / Full-stack) without introducing Redux or Zustand while keeping the component clean and performant.
+
+**Optimisation:** Used React's built-in `useState` hook with a derived filtered list computed via `useMemo`, avoiding unnecessary re-renders. The active filter badge provides instant visual feedback with zero external dependencies.
+
+---
+
+### 3. Vite + TypeScript Configuration for Production
+**Challenge:** The default Vite + TypeScript scaffold required tuning for a production-grade setup — including proper `tsconfig` splits (`app` vs `node`), ESLint type-aware rules, and ensuring the build output was optimised for deployment.
+
+**Optimisation:** Split TypeScript configuration into `tsconfig.app.json` (browser target) and `tsconfig.node.json` (Vite tooling target). Enabled `tseslint.configs.recommendedTypeChecked` in ESLint for deeper static analysis, catching errors at lint time rather than runtime.
+
+---
+
+### 4. Responsive Layout with Tailwind CSS
+**Challenge:** Achieving a consistent card-grid layout across widely varying viewport sizes — particularly the multi-column project cards and the skills grid — without writing custom media queries.
+
+**Optimisation:** Leveraged Tailwind's responsive utility prefixes (`sm:`, `md:`, `lg:`) with a mobile-first approach. Used CSS Grid and Flexbox utility classes to handle reflow gracefully, ensuring the layout collapses naturally on smaller screens without breakage.
+
+---
+
+### 5. Performance-Conscious Asset Delivery
+**Challenge:** Ensuring fast initial load times on Vercel without lazy-loading complexity while keeping the bundle size minimal.
+
+**Optimisation:** Vite's built-in code splitting and tree-shaking handles dead-code elimination automatically. Static assets are served from the `public/` directory with cache-friendly headers via Vercel's edge network, keeping Time-to-Interactive low.
+
+---
+
+## 🚀 Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/HEYDEV001/Portfolio.git
+cd Portfolio
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build locally
+npm run preview
 ```
+
+> The dev server runs at `http://localhost:5173` by default.
+
+---
+
+## 🌐 Deployment
+
+The portfolio is deployed on **Vercel** with automatic deployments on every push to `main`.
+
+Live URL: [https://portfolio-dev-pathak.vercel.app](https://portfolio-dev-pathak.vercel.app)
+
+---
+
+## 📬 Contact
+
+| Channel | Details |
+|---|---|
+| Email | devpathak9685@gmail.com |
+| LinkedIn | [linkedin.com/in/Dev Pathak](https://linkedin.com/in/DevPathak) |
+| GitHub | [github.com/HEYDEV001](https://github.com/HEYDEV001) |
+| Location | Indore, M.P., India |
+| Availability | Remote |
+
+---
+
+<p align="center">Designed & built by <strong>Dev Pathak</strong> • © 2026</p>

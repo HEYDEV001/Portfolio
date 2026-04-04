@@ -19,19 +19,19 @@
 > **Note:** Screenshots below show the live portfolio in action.
 
 ### 🏠 Hero & Home
-![Home](./screenshots/home.png)
+![Home](./images/Home.png)
 *Landing page with hero tagline, current project widget, and key stats.*
 
 ### 🗂️ Projects
-![Projects](./screenshots/projects.png)
+![Projects](./images/projects.png)
 *Filterable project showcase with tech stack tags, live demos, and source links.*
 
 ### 📄 Resume — Technical Skills
-![Resume](./screenshots/resume.png)
+![Resume](./images/skills.png)
 *Interactive resume page with skill categories and PDF download.*
 
 ### 🤝 Connect
-![Connect](./screenshots/connect.png)
+![Connect](./images/Socials.png)
 *Contact section with direct email, social links, and availability status.*
 
 ---

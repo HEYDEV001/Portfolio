@@ -14,7 +14,7 @@
 
 | Home | Projects |
 |------|----------|
-| ![Home Section](https://raw.githubusercontent.com/HEYDEV001/Portfolio/main/public/preview-home.png) | ![Projects Section](https://raw.githubusercontent.com/HEYDEV001/Portfolio/main/public/preview-projects.png) |
+| ![Home Section](./images/Home.png) | ![Projects Section](./images/Projects.png) |
 
 > **Note:** Screenshots below show the live portfolio in action.
 

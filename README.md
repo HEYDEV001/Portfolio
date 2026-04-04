@@ -14,7 +14,7 @@
 
 | Home | Projects |
 |------|----------|
-| ![Home Section](./images/Home.png) | ![Projects Section](./images/Projects.png) |
+| ![Home Section](./images/Home.png) | ![Projects Section](./images/projects.png) |
 
 > **Note:** Screenshots below show the live portfolio in action.
 

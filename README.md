@@ -211,4 +211,9 @@ Live URL: [https://portfolio-dev-pathak.vercel.app](https://portfolio-dev-pathak
 
 ---
 
-<p align="center">Designed & built by <strong>Dev Pathak</strong> • © 2026</p>
+## Author
+
+**HEYDEV001**
+[github.com/HEYDEV001](https://github.com/HEYDEV001)
+
+---

@@ -10,7 +10,7 @@
 
 ---
 
-## 📸 Preview
+##  Preview
 
 | Home | Projects |
 |------|----------|
@@ -18,25 +18,25 @@
 
 > **Note:** Screenshots below show the live portfolio in action.
 
-### 🏠 Hero & Home
+###  Hero & Home
 ![Home](./images/Home.png)
 *Landing page with hero tagline, current project widget, and key stats.*
 
-### 🗂️ Projects
+###  Projects
 ![Projects](./images/projects.png)
 *Filterable project showcase with tech stack tags, live demos, and source links.*
 
-### 📄 Resume — Technical Skills
+###  Resume — Technical Skills
 ![Resume](./images/skills.png)
 *Interactive resume page with skill categories and PDF download.*
 
-### 🤝 Connect
+###  Connect
 ![Connect](./images/Socials.png)
 *Contact section with direct email, social links, and availability status.*
 
 ---
 
-## 🎯 Project Objective
+##  Project Objective
 
 This portfolio was built to **professionally represent Dev Pathak** as a Backend + DevOps Engineer specialising in microservices, cloud-native architecture, containerised deployments, and resilient distributed systems.
 
@@ -50,7 +50,7 @@ The core goals of this project are:
 
 ---
 
-## 🗂️ Project Structure
+##  Project Structure
 
 ```
 Portfolio/
@@ -88,15 +88,15 @@ Portfolio/
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-### 🏠 Hero Section
+###  Hero Section
 - Bold, developer-centric tagline with animated entrance
 - **"Now Working On"** live widget showing current project (Distributed Backend Systems) with tech stack tags
 - **Live prototype progress bar** widget (72% complete, 3 days left)
 - Key stats: 3rd year M.Tech (AI & DS) student, 3-month full-stack internship, 10+ projects built
 
-### 🗂️ Projects Showcase
+###  Projects Showcase
 - **Filterable by category**: All / Product / Web / Backend / Full-stack
 - Four featured backend projects with descriptions, year, and tech stack tags:
   | Project | Description |
@@ -107,7 +107,7 @@ Portfolio/
   | **Krishi-setu** | AI-powered agricultural assistance — ML API integration, microservices, farmer queries |
 - Each card links to **Live Demo** and **Source** repository
 
-### 📄 Interactive Resume
+###  Interactive Resume
 - Three tabs: **Experience**, **Technical Skills**, **Education**
 - Visual skill category cards:
   - Frontend: React.js, Next.js, TypeScript, JavaScript, HTML/CSS, Responsive UI
@@ -118,12 +118,12 @@ Portfolio/
   - Programming: Java, C, C++, Data Structures
 - **One-click PDF resume download** via direct link
 
-### 🤝 Connect Section
+###  Connect Section
 - Direct contact card with **Copy Email** and **Send Email** buttons
 - Social profile links: LinkedIn, GitHub, X (Twitter), Instagram
 - Availability status: **Remote**, Location: Indore (M.P.), IN
 
-### 🎨 Design & UX
+###  Design & UX
 - Soft blue-grey gradient theme with consistent card-based layout
 - Fully **responsive** across desktop and mobile viewports
 - Smooth scroll navigation with **active tab highlighting**
@@ -131,7 +131,7 @@ Portfolio/
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -144,7 +144,7 @@ Portfolio/
 
 ---
 
-## 🚧 Challenges & Optimisations
+##  Challenges & Optimisations
 
 ### 1. Filter State Management Without a State Library
 **Challenge:** Implementing category-based project filtering (All / Product / Web / Backend / Full-stack) without introducing Redux or Zustand while keeping the component clean and performant.
@@ -167,7 +167,7 @@ Portfolio/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ```bash
 # Clone the repository
@@ -191,7 +191,7 @@ npm run preview
 
 ---
 
-## 🌐 Deployment
+##  Deployment
 
 The portfolio is deployed on **Vercel** with automatic deployments on every push to `main`.
 
@@ -199,7 +199,7 @@ Live URL: [https://portfolio-dev-pathak.vercel.app](https://portfolio-dev-pathak
 
 ---
 
-## 📬 Contact
+##  Contact
 
 | Channel | Details |
 |---|---|

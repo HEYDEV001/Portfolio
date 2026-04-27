@@ -1,79 +1,74 @@
 import { useEffect, useState } from 'react'
 
-type Sparkle = {
-  id: number
-  x: number
-  y: number
-  size: number
-  delay: number
-}
-
 export function CursorSparkles() {
-  const [sparkles, setSparkles] = useState<Sparkle[]>([])
+  const [pos, setPos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    let id = 0
-    let frame: number | null = null
-
-    const addSparkle = (e: PointerEvent) => {
-      const x = e.clientX
-      const y = e.clientY
-      const next: Sparkle = {
-        id: id++,
-        x,
-        y,
-        size: 8 + Math.random() * 10,
-        delay: Math.random() * 120,
-      }
-
-      // Use rAF to batch updates
-      if (frame != null) cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(() => {
-        setSparkles((prev) => {
-          const withNew = [...prev, next]
-          // keep only the latest 32 sparkles
-          return withNew.slice(-32)
-        })
-      })
-    }
-
     const handlePointerMove = (e: PointerEvent) => {
-      addSparkle(e)
+      setPos({ x: e.clientX, y: e.clientY })
     }
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove)
-      if (frame != null) cancelAnimationFrame(frame)
     }
   }, [])
 
   return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        pointerEvents: 'none',
-        zIndex: 50,
-        overflow: 'hidden',
-      }}
-    >
-      {sparkles.map((sparkle) => (
-        <span
-          key={sparkle.id}
-          className="cursor-sparkle"
+      <div
+          aria-hidden="true"
           style={{
-            left: sparkle.x,
-            top: sparkle.y,
-            width: sparkle.size,
-            height: sparkle.size,
-            animationDelay: `${sparkle.delay}ms`,
+            position: 'fixed',
+            inset: 0,
+            pointerEvents: 'none',
+            zIndex: 50,
+            overflow: 'hidden',
           }}
+      >
+        <div
+            style={{
+              position: 'fixed',
+              left: pos.x,
+              top: pos.y,
+              width: 120,
+              height: 120,
+              transform: 'translate(-50%, -50%) scale(1)',
+              animation: 'waterFloat 3s ease-in-out infinite',
+              borderRadius: '50%',
+              pointerEvents: 'none',
+
+              // Glass + water effect
+              backdropFilter: 'brightness(1.1) contrast(1.1) saturate(1.2)',
+              WebkitBackdropFilter: 'brightness(1.1) contrast(1.1) saturate(1.2)',
+
+              // Soft inner highlight (top light reflection)
+              background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,255,255,0.05) 40%, transparent 60%)',
+
+              // Outer glow + depth
+              border: '1px solid rgba(255,255,255,0.25)',
+              boxShadow: `
+                inset 0 10px 20px rgba(255,255,255,0.2),
+                inset 0 -10px 20px rgba(0,0,0,0.2),
+                0 10px 30px rgba(0,0,0,0.25)
+              `,
+
+              // Slight motion smoothing
+              transition: 'transform 0.08s ease-out',
+            }}
         />
-      ))}
-    </div>
+        <style>
+        {`
+        @keyframes waterFloat {
+          0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+          }
+          50% {
+            transform: translate(-50%, -50%) scale(1.02);
+          }
+        }
+        `}
+        </style>
+      </div>
   )
 }
-

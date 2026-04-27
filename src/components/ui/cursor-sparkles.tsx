@@ -48,8 +48,8 @@ export function CursorSparkles() {
               // Outer glow + depth
               border: '1px solid rgba(255,255,255,0.25)',
               boxShadow: `
-                inset 0 10px 20px rgba(255,255,255,0.2),
-                inset 0 -10px 20px rgba(0,0,0,0.2),
+                inset 0 10px 20px rgba(255,255,255,0.25),
+                inset 0 -10px 20px rgba(0,0,0,0.25),
                 0 10px 30px rgba(0,0,0,0.25)
               `,
 

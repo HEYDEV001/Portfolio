@@ -3,7 +3,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  cursor: url("/src/assets/cursor.png") 4 4, auto;
+  cursor: url("/src/assets/cursor.png") 2 2, auto;
 }
 
 .nav {

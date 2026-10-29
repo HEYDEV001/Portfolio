@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { FileText, FolderGit2 } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { AnimatePresence, MotionConfig, motion, useScroll, useSpring } from 'framer-motion'
+import { ArrowDown, ArrowUpRight, Check, Copy, FileText, FolderGit2 } from 'lucide-react'
 import './App.css'
 import { LiquidMetalButton } from '@/components/ui/liquid-metal-button'
-import { CursorSparkles } from '@/components/ui/cursor-sparkles'
+import { AuroraBackground } from '@/components/ui/aurora-background'
 import { LiquidNavbar, NimbusIcons, type LiquidNavItem } from '@/components/ui/liquid-glass-navbar'
 
 type ProjectTag = 'Product' | 'Web' | 'Backend' | 'Full-stack'
@@ -17,7 +18,7 @@ type Project = {
   repo: string
 }
 
-type ResumeTab = 'Experience' | 'Technical Skills' | 'Education'
+type ResumeTab = 'Experience' | 'Skills' | 'Education'
 
 type Experience = {
   company: string
@@ -44,8 +45,6 @@ type Social = {
   name: string
   handle: string
   url: string
-  note: string
-  logo: string
 }
 
 const navSections: (LiquidNavItem & { id: string })[] = [
@@ -218,31 +217,182 @@ const socials: Social[] = [
     name: 'LinkedIn',
     handle: 'linkedin.com/in/Dev Pathak',
     url: 'https://www.linkedin.com/in/dev-pathak-17b067296/',
-    note: 'Professional network and recommendations.',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg',
   },
   {
     name: 'GitHub',
     handle: 'github.com/HEYDEV001',
     url: 'https://github.com/HEYDEV001',
-    note: 'Open-source work and experiments.',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg',
   },
   {
     name: 'X (Twitter)',
     handle: 'x.com/your-handle',
     url: 'https://x.com/your-handle',
-    note: 'Thoughts on product, design, and engineering.',
-    logo: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg',
   },
   {
     name: 'Instagram',
     handle: 'instagram.com/devvvvvvv.p',
     url: 'https://www.instagram.com/devvvvvvv.p/',
-    note: 'connect on Instagram',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png',
   },
 ]
+
+const marqueeWords = [
+  'Backend engineering',
+  'Distributed systems',
+  'Microservices',
+  'DevOps',
+  'Cloud-native',
+  'Kafka',
+  'Kubernetes',
+]
+
+const ease = [0.16, 1, 0.3, 1] as const
+
+const fadeUp = (delay: number) => ({
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.6 },
+  transition: { duration: 0.9, delay, ease },
+})
+
+const resumeTabs: ResumeTab[] = ['Experience', 'Skills', 'Education']
+
+const resumeCounts: Record<ResumeTab, number> = {
+  Experience: experience.length,
+  Skills: skillGroups.length,
+  Education: education.length,
+}
+
+const rowReveal = (i: number) => ({
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.3 },
+  transition: { duration: 0.8, delay: 0.08 * i, ease },
+})
+
+function RevealTitle({ text }: { text: string }) {
+  return (
+    // The heading triggers the reveal: masked words start clipped, so they can't observe themselves
+    <motion.h2
+      className="display-title"
+      aria-label={text}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.6 }}
+      transition={{ staggerChildren: 0.08 }}
+    >
+      {text.split(' ').map((word, i) => (
+        <span className="word-mask" key={`${word}-${i}`} aria-hidden="true">
+          <motion.span
+            variants={{ hidden: { y: '110%' }, visible: { y: '0%' } }}
+            transition={{ duration: 1, ease }}
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </motion.h2>
+  )
+}
+
+function Hairline({ className = '', delay = 0 }: { className?: string; delay?: number }) {
+  return (
+    <motion.span
+      className={`hairline ${className}`}
+      aria-hidden="true"
+      initial={{ scaleX: 0 }}
+      whileInView={{ scaleX: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 1.4, delay, ease }}
+    />
+  )
+}
+
+function Timeline({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null)
+  // The rail fills as the list scrolls through the viewport
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 80%', 'end 60%'] })
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 })
+
+  return (
+    <div ref={ref} className="timeline">
+      <span className="timeline-rail" aria-hidden="true">
+        <motion.span className="timeline-progress" style={{ scaleY: progress }} />
+      </span>
+      <ol className="resume-list">{children}</ol>
+    </div>
+  )
+}
+
+type TimelineRowProps = {
+  index: number
+  meta: string[]
+  title: string
+  sub: string
+  text: string
+  points?: string[]
+}
+
+function TimelineRow({ index, meta, title, sub, text, points }: TimelineRowProps) {
+  return (
+    <motion.li className="resume-row" {...rowReveal(index)}>
+      <div className="row-meta">
+        {meta.map((item, i) => (
+          <span key={item} className={i === 0 ? 'row-period' : undefined}>
+            {item}
+          </span>
+        ))}
+      </div>
+      <motion.span
+        className="row-dot"
+        aria-hidden="true"
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        viewport={{ once: true, amount: 1 }}
+        transition={{ type: 'spring', bounce: 0.4, duration: 0.7, delay: 0.25 }}
+      />
+      <div className="row-main">
+        <p className="row-sub">
+          <span className="row-index">{String(index + 1).padStart(2, '0')}</span>
+          {sub}
+        </p>
+        <h3 className="row-title">{title}</h3>
+        <p className="row-text">{text}</p>
+        {points && (
+          <ul className="row-points">
+            {points.map((item, j) => (
+              <motion.li
+                key={item}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.2 + 0.07 * j, ease }}
+              >
+                {item}
+              </motion.li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </motion.li>
+  )
+}
+
+const istTime = new Intl.DateTimeFormat('en-IN', {
+  hour: '2-digit',
+  minute: '2-digit',
+  timeZone: 'Asia/Kolkata',
+})
+
+function LocalTime() {
+  const [time, setTime] = useState(() => istTime.format(new Date()))
+
+  useEffect(() => {
+    const id = window.setInterval(() => setTime(istTime.format(new Date())), 30_000)
+    return () => window.clearInterval(id)
+  }, [])
+
+  return <>{time} IST</>
+}
 
 function App() {
   const [activeSection, setActiveSection] = useState('home')
@@ -303,20 +453,9 @@ function App() {
     return () => observer.disconnect()
   }, [])
 
-  useEffect(() => {
-    const handleMove = (event: MouseEvent) => {
-      const root = document.documentElement
-      root.style.setProperty('--mx', `${event.clientX}px`)
-      root.style.setProperty('--my', `${event.clientY}px`)
-    }
-
-    window.addEventListener('mousemove', handleMove)
-    return () => window.removeEventListener('mousemove', handleMove)
-  }, [])
-
   return (
     <div className="app">
-      <CursorSparkles />
+      <AuroraBackground className="fixed inset-0 -z-10 h-auto" aria-hidden="true" />
       <header className="nav">
         <div className="brand">
           <span className="badge">Portfolio</span>
@@ -449,154 +588,228 @@ function App() {
         </section>
 
         <section id="resume" className="resume" data-section>
-          <div className="section-head">
-            <p className="eyebrow">Resume</p>
-            <h2>Experience designing and operating scalable backend systems.</h2>
-          </div>
+          <MotionConfig reducedMotion="user">
+            <div className="resume-top">
+              <motion.p className="eyebrow" {...fadeUp(0)}>
+                <span className="section-index">03</span>
+                Resume
+              </motion.p>
+              <Hairline className="resume-top-line" delay={0.15} />
+              <motion.div {...fadeUp(0.25)}>
+                <a className="cta-pill cta-pill--small" href="/dev_pathak_resume.pdf" download>
+                  Download PDF
+                  <span className="cta-icon cta-icon--down">
+                    <ArrowDown size={16} />
+                    <ArrowDown size={16} />
+                  </span>
+                </a>
+              </motion.div>
+            </div>
 
-          <div className="resume-shell">
-            <aside className="resume-tabs">
-              {(['Experience', 'Technical Skills', 'Education'] as ResumeTab[]).map((tab) => (
+            <div className="resume-head">
+              <RevealTitle text="Experience, skills & education." />
+              <motion.p className="panel-lede" {...fadeUp(0.35)}>
+                Designing and operating scalable backend systems, from first commit to production.
+              </motion.p>
+            </div>
+
+            <motion.div className="resume-tabs" role="tablist" aria-label="Resume sections" {...fadeUp(0.45)}>
+              {resumeTabs.map((tab) => (
                 <button
                   key={tab}
+                  type="button"
+                  role="tab"
+                  aria-selected={resumeTab === tab}
                   className={resumeTab === tab ? 'active' : ''}
                   onClick={() => setResumeTab(tab)}
                 >
-                  {tab}
+                  <span className="tab-label">{tab}</span>
+                  <sup className="tab-count">{String(resumeCounts[tab]).padStart(2, '0')}</sup>
+                  {resumeTab === tab && (
+                    <motion.span
+                      layoutId="resume-tab-line"
+                      className="tab-line"
+                      transition={{ type: 'spring', bounce: 0.15, duration: 0.6 }}
+                    />
+                  )}
                 </button>
               ))}
-              <div className="resume-cta">
-                <p>Need the full PDF?</p>
-                <a className="button ghost" href="/dev_pathak_resume.pdf">
-                  Download resume
-                </a>
-              </div>
-            </aside>
+            </motion.div>
 
-            <div className="resume-panel">
-              <div className="resume-panel-inner">
-              {resumeTab === 'Experience' && (
-                <div className="timeline">
-                  {experience.map((role) => (
-                    <div key={role.company} className="timeline-item">
-                      <div className="timeline-header">
-                        <p className="experience-location">
-                          {role.period} · {role.location}
-                        </p>
-                        <h3>
-                          {role.role} · {role.company}
-                        </h3>
-                      </div>
-                      <p className="timeline-summary">{role.summary}</p>
-                      <ul>
-                        {role.highlights.map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div className="resume-body" role="tabpanel">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={resumeTab}
+                  initial={{ opacity: 0, y: 16, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -12, filter: 'blur(8px)' }}
+                  transition={{ duration: 0.45, ease }}
+                >
+                  {resumeTab === 'Experience' && (
+                    <Timeline>
+                      {experience.map((role, i) => (
+                        <TimelineRow
+                          key={role.company}
+                          index={i}
+                          meta={[role.period, role.location]}
+                          title={role.role}
+                          sub={role.company}
+                          text={role.summary}
+                          points={role.highlights}
+                        />
+                      ))}
+                    </Timeline>
+                  )}
 
-              {resumeTab === 'Technical Skills' && (
-                <div className="skills">
-                  <div className="skills-grid">
-                    {skillGroups.map((group) => (
-                      <div key={group.title} className="skill-card">
-                        <div className="skill-card-inner">
-                          <h3 className="skill-group-title">{group.title}</h3>
-                          <div className="skill-items">
-                            {group.items.map((item) => (
-                              <span key={item} className="skill-pill">
-                                {item}
-                              </span>
-                            ))}
+                  {resumeTab === 'Skills' && (
+                    <div className="skill-list">
+                      {skillGroups.map((group, i) => (
+                        <motion.div key={group.title} className="skill-row" {...rowReveal(i)}>
+                          <Hairline delay={0.08 * i} />
+                          <div className="skill-row-head">
+                            <span className="row-index">{String(i + 1).padStart(2, '0')}</span>
+                            <h3>{group.title}</h3>
                           </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {resumeTab === 'Education' && (
-                <div className="education">
-                  {education.map((entry) => (
-                    <div key={entry.school} className="education-item">
-                      <p className="School-name">{entry.credential}</p>
-                      <h3>{entry.school}</h3>
-                      <p className="education-meta">{entry.period}</p>
-                      <p>{entry.note}</p>
+                          <ul className="skill-tags">
+                            {group.items.map((item, j) => (
+                              <motion.li
+                                key={item}
+                                initial={{ opacity: 0, y: 8 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.08 * i + 0.03 * j + 0.15, ease }}
+                              >
+                                {item}
+                              </motion.li>
+                            ))}
+                          </ul>
+                        </motion.div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-              </div>
+                  )}
+
+                  {resumeTab === 'Education' && (
+                    <Timeline>
+                      {education.map((entry, i) => (
+                        <TimelineRow
+                          key={entry.school}
+                          index={i}
+                          meta={[entry.period]}
+                          title={entry.school}
+                          sub={entry.credential}
+                          text={entry.note}
+                        />
+                      ))}
+                    </Timeline>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
-          </div>
+          </MotionConfig>
         </section>
 
         <section id="connect" className="connect" data-section>
-          <div className="section-head">
-            <p className="eyebrow">Connection</p>
-            <h2>Let’s build the infrastructure behind great products.</h2>
-          </div>
+          <MotionConfig reducedMotion="user">
+            <div className="glass-panel">
+              <div className="panel-top">
+                <p className="eyebrow">Contact</p>
+                <span className="connect-status">
+                  <span className="status-dot" />
+                  Available for new projects
+                </span>
+              </div>
 
-          <div className="connect-grid" style={{ maxWidth: '1420px', margin: '0 auto', gap: '20px', display: 'grid', gridTemplateColumns: '1.1fr 1fr', alignItems: 'stretch' }}>
-            <div className="contact-card" style={{ gridRow: 'span 2', width: '100%' }}>
-              <div className="contact-card-inner">
-                <h3>Direct contact</h3>
-                <p>Open to backend engineering, distributed systems, and scalable infrastructure projects.</p>
-                <div className="contact-actions">
-                  <button className="button copyEmail" onClick={handleCopy}>
-                    {copied ? 'Email copied' : 'Copy email'}
-                  </button>
-                  <a className="button ghost" href="mailto:devpathak9685@gmail.com">
-                    Send email
-                  </a>
-                </div>
-                <div className="contact-details">
-                  <p>
-                    <span>Email</span>
-                    devpathak9685@gmail.com
-                  </p>
-                  <p>
-                    <span>Location</span>
-                    Indore(M.P.) IN
-                  </p>
-                  <p>
-                    <span>Availability</span>
-                    Remote
-                  </p>
-                </div>
+              <RevealTitle text="Let’s build something that scales." />
+
+              <motion.p className="panel-lede" {...fadeUp(0.35)}>
+                Open to backend engineering, distributed systems, and scalable infrastructure projects.
+              </motion.p>
+
+              <motion.button type="button" className="email-line" onClick={handleCopy} {...fadeUp(0.45)}>
+                <span className="email-text">devpathak9685@gmail.com</span>
+                <span className="email-hint">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={copied ? 'copied' : 'copy'}
+                      initial={{ y: 14, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -14, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {copied ? <Check size={14} /> : <Copy size={14} />}
+                      {copied ? 'Copied' : 'Copy'}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
+              </motion.button>
+
+              <motion.div className="connect-actions" {...fadeUp(0.55)}>
+                <a className="cta-pill" href="mailto:devpathak9685@gmail.com">
+                  Start a conversation
+                  <span className="cta-icon">
+                    <ArrowUpRight size={18} />
+                    <ArrowUpRight size={18} />
+                  </span>
+                </a>
+                <a className="connect-link" href="/dev_pathak_resume.pdf">
+                  Download resume
+                </a>
+              </motion.div>
+
+              <div className="connect-bottom">
+                <motion.dl className="connect-meta" {...fadeUp(0.1)}>
+                  <div>
+                    <dt>Based in</dt>
+                    <dd>Indore, India</dd>
+                  </div>
+                  <div>
+                    <dt>Works</dt>
+                    <dd>Remote</dd>
+                  </div>
+                  <div>
+                    <dt>Local time</dt>
+                    <dd>
+                      <LocalTime />
+                    </dd>
+                  </div>
+                </motion.dl>
+
+                <ul className="social-list">
+                  {socials.map((social, i) => (
+                    <motion.li
+                      key={social.name}
+                      initial={{ opacity: 0, y: 18 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.8 }}
+                      transition={{ duration: 0.8, delay: 0.08 * i, ease }}
+                    >
+                      <a className="social-row" href={social.url} target="_blank" rel="noreferrer">
+                        <span className="social-index">{String(i + 1).padStart(2, '0')}</span>
+                        <span className="social-name">{social.name}</span>
+                        <span className="social-handle">{social.handle}</span>
+                        <ArrowUpRight className="social-arrow" size={20} />
+                      </a>
+                    </motion.li>
+                  ))}
+                </ul>
               </div>
             </div>
 
-            <div className="socials" style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)', gridAutoRows: '1fr', gap: '16px', width: '100%' }}>
-              {socials.map((social) => (
-                <a
-                  key={social.name}
-                  className="social-card"
-                  style={{ width: '100%', height: '100%' }}
-                  href={social.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <div className="social-card-inner">
-                    <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                      <img src={social.logo} alt={social.name} style={{width: '33px', height: '33px'}}/>
-                      <div>
-                        <h3>{social.name}</h3>
-                        <p>{social.handle}</p>
-                      </div>
-                    </div>
+            <div className="connect-marquee" aria-hidden="true">
+              <div className="marquee-track">
+                {[0, 1].map((copy) => (
+                  <div className="marquee-group" key={copy}>
+                    {marqueeWords.map((word) => (
+                      <span key={word}>
+                        {word}
+                        <i>✦</i>
+                      </span>
+                    ))}
                   </div>
-                </a>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          </MotionConfig>
         </section>
       </main>
 

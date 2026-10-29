@@ -248,7 +248,7 @@ export function LiquidMetalButton({
                 height: `${dimensions.innerHeight}px`,
                 margin: '2px',
                 borderRadius: '100px',
-                background: '#fcf9ea',
+                background: '#e0ecfb',
                 boxShadow: isPressed
                   ? 'inset 0px 2px 4px rgba(16, 16, 16, 0.4), inset 0px 1px 2px rgba(16, 16, 16, 0.3)'
                   : 'none',
@@ -286,7 +286,7 @@ export function LiquidMetalButton({
                     : '0px 0px 0px 1px rgba(16, 16, 16, 0.3), 0px 36px 14px 0px rgba(16, 16, 16, 0.02), 0px 20px 12px 0px rgba(16, 16, 16, 0.08), 0px 9px 9px 0px rgba(16, 16, 16, 0.12), 0px 2px 5px 0px rgba(16, 16, 16, 0.15)',
                 transition:
                   'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.4s ease, height 0.4s ease, box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-                background: '#fcf9ea',
+                background: '#e0ecfb',
                 opacity: 0.95,
               }}
             >
@@ -344,7 +344,7 @@ export function LiquidMetalButton({
                   height: '20px',
                   borderRadius: '50%',
                   background:
-                    'radial-gradient(circle, rgba(252, 249, 234, 0.6) 0%, rgba(252, 249, 234, 0) 70%)',
+                    'radial-gradient(circle, rgba(224, 236, 251, 0.6) 0%, rgba(224, 236, 251, 0) 70%)',
                   pointerEvents: 'none',
                   animation: 'ripple-animation 0.6s ease-out',
                 }}

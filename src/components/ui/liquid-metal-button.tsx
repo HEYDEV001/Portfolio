@@ -109,7 +109,14 @@ export function LiquidMetalButton({
 
     loadShader()
 
+    // The shader renders every frame while running, so stop it whenever the button is off screen
+    const visibility = new IntersectionObserver(([entry]) => {
+      shaderMount.current?.setSpeed?.(entry.isIntersecting ? 0.6 : 0)
+    })
+    if (shaderRef.current) visibility.observe(shaderRef.current)
+
     return () => {
+      visibility.disconnect()
       if (shaderMount.current?.destroy) {
         shaderMount.current.destroy()
         shaderMount.current = null

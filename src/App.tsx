@@ -1,9 +1,19 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { AnimatePresence, MotionConfig, motion, useScroll, useSpring } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import {
+  AnimatePresence,
+  MotionConfig,
+  animate,
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from 'framer-motion'
 import { ArrowDown, ArrowUpRight, Check, Copy, FileText, FolderGit2 } from 'lucide-react'
 import './App.css'
 import { LiquidMetalButton } from '@/components/ui/liquid-metal-button'
 import { AuroraBackground } from '@/components/ui/aurora-background'
+import { SystemOrbit } from '@/components/ui/system-orbit'
 import { LiquidNavbar, NimbusIcons, type LiquidNavItem } from '@/components/ui/liquid-glass-navbar'
 
 type ProjectTag = 'Product' | 'Web' | 'Backend' | 'Full-stack'
@@ -235,6 +245,12 @@ const socials: Social[] = [
   },
 ]
 
+const heroMetrics = [
+  { value: 3, suffix: 'rd', label: 'Year of M.Tech (AI & DS)' },
+  { value: 3, suffix: 'mo', label: 'Full-stack internship' },
+  { value: 10, suffix: '+', label: 'Projects built' },
+]
+
 const marqueeWords = [
   'Backend engineering',
   'Distributed systems',
@@ -248,11 +264,20 @@ const marqueeWords = [
 const ease = [0.16, 1, 0.3, 1] as const
 
 const fadeUp = (delay: number) => ({
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.6 },
-  transition: { duration: 0.9, delay, ease },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.6, delay, ease },
 })
+
+const projectFilters: ('All' | ProjectTag)[] = ['All', ...new Set(projects.map((project) => project.tag))]
+
+const projectCounts = Object.fromEntries(
+  projectFilters.map((tag) => [
+    tag,
+    tag === 'All' ? projects.length : projects.filter((project) => project.tag === tag).length,
+  ])
+) as Record<'All' | ProjectTag, number>
 
 const resumeTabs: ResumeTab[] = ['Experience', 'Skills', 'Education']
 
@@ -263,34 +288,144 @@ const resumeCounts: Record<ResumeTab, number> = {
 }
 
 const rowReveal = (i: number) => ({
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.3 },
-  transition: { duration: 0.8, delay: 0.08 * i, ease },
+  viewport: { once: true, amount: 0.15 },
+  transition: { duration: 0.55, delay: 0.05 * i, ease },
 })
 
-function RevealTitle({ text }: { text: string }) {
+type RevealTitleProps = {
+  text: string
+  as?: 'h1' | 'h2'
+  className?: string
+}
+
+// Words wrapped in *asterisks* render as italic accents
+function RevealTitle({ text, as = 'h2', className = '' }: RevealTitleProps) {
+  const Heading = as === 'h1' ? motion.h1 : motion.h2
+
   return (
     // The heading triggers the reveal: masked words start clipped, so they can't observe themselves
-    <motion.h2
-      className="display-title"
-      aria-label={text}
+    <Heading
+      className={`display-title ${className}`}
+      aria-label={text.replaceAll('*', '')}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.6 }}
-      transition={{ staggerChildren: 0.08 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ staggerChildren: 0.04 }}
     >
-      {text.split(' ').map((word, i) => (
-        <span className="word-mask" key={`${word}-${i}`} aria-hidden="true">
-          <motion.span
-            variants={{ hidden: { y: '110%' }, visible: { y: '0%' } }}
-            transition={{ duration: 1, ease }}
-          >
-            {word}
-          </motion.span>
-        </span>
-      ))}
-    </motion.h2>
+      {text.split(' ').map((word, i) => {
+        const accent = word.startsWith('*') && word.includes('*', 1)
+        const [, inner = word, trail = ''] = accent ? word.match(/^\*(.+)\*(.*)$/) ?? [] : []
+        return (
+          <span className="word-mask" key={`${word}-${i}`} aria-hidden="true">
+            <motion.span
+              variants={{ hidden: { y: '110%' }, visible: { y: '0%' } }}
+              transition={{ duration: 0.7, ease }}
+            >
+              {accent ? (
+                <>
+                  <em>{inner}</em>
+                  {trail}
+                </>
+              ) : (
+                word
+              )}
+            </motion.span>
+          </span>
+        )
+      })}
+    </Heading>
+  )
+}
+
+function CountUp({ value, suffix }: { value: number; suffix: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.8 })
+  const reduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    if (!inView || !ref.current) return
+    const node = ref.current
+    const controls = animate(0, value, {
+      duration: reduceMotion ? 0 : 1.2,
+      delay: reduceMotion ? 0 : 0.3,
+      ease,
+      onUpdate: (v) => {
+        node.textContent = String(Math.round(v))
+      },
+    })
+    return () => controls.stop()
+  }, [inView, value, reduceMotion])
+
+  return (
+    <p className="metric-value">
+      <span ref={ref}>0</span>
+      <span className="metric-suffix">{suffix}</span>
+    </p>
+  )
+}
+
+function ProjectRow({ project, index }: { project: Project; index: number }) {
+  // Feeds the cursor position to the CSS spotlight behind the row
+  const trackCursor = (event: MouseEvent<HTMLLIElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    event.currentTarget.style.setProperty('--x', `${event.clientX - rect.left}px`)
+    event.currentTarget.style.setProperty('--y', `${event.clientY - rect.top}px`)
+  }
+
+  return (
+    <motion.li
+      layout
+      className="project-row"
+      onMouseMove={trackCursor}
+      {...rowReveal(index)}
+      exit={{ opacity: 0, y: -8, filter: 'blur(4px)', transition: { duration: 0.2 } }}
+    >
+      <Hairline delay={0.05 * index} />
+      <div className="project-row-inner">
+        <span className="row-index">{String(index + 1).padStart(2, '0')}</span>
+
+        <div className="project-heading">
+          <h3 className="project-title">
+            <a className="project-link" href={project.repo} target="_blank" rel="noreferrer">
+              {project.title}
+            </a>
+          </h3>
+          <span className="project-tag">{project.tag}</span>
+        </div>
+
+        <div className="project-info">
+          <p>{project.description}</p>
+          <ul className="project-stack">
+            {project.stack.map((item, j) => (
+              <motion.li
+                key={item}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: 0.04 * index + 0.02 * j + 0.1, ease }}
+              >
+                {item}
+              </motion.li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="project-side">
+          <span className="project-year">{project.year}</span>
+          {project.live !== '#' && (
+            <a className="project-live connect-link" href={project.live} target="_blank" rel="noreferrer">
+              Live
+            </a>
+          )}
+          <span className="project-arrow" aria-hidden="true">
+            <ArrowUpRight size={18} />
+            <ArrowUpRight size={18} />
+          </span>
+        </div>
+      </div>
+    </motion.li>
   )
 }
 
@@ -302,7 +437,7 @@ function Hairline({ className = '', delay = 0 }: { className?: string; delay?: n
       initial={{ scaleX: 0 }}
       whileInView={{ scaleX: 1 }}
       viewport={{ once: true }}
-      transition={{ duration: 1.4, delay, ease }}
+      transition={{ duration: 0.9, delay, ease }}
     />
   )
 }
@@ -348,7 +483,7 @@ function TimelineRow({ index, meta, title, sub, text, points }: TimelineRowProps
         initial={{ scale: 0 }}
         whileInView={{ scale: 1 }}
         viewport={{ once: true, amount: 1 }}
-        transition={{ type: 'spring', bounce: 0.4, duration: 0.7, delay: 0.25 }}
+        transition={{ type: 'spring', bounce: 0.4, duration: 0.6, delay: 0.1 }}
       />
       <div className="row-main">
         <p className="row-sub">
@@ -365,7 +500,7 @@ function TimelineRow({ index, meta, title, sub, text, points }: TimelineRowProps
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.2 + 0.07 * j, ease }}
+                transition={{ duration: 0.5, delay: 0.1 + 0.04 * j, ease }}
               >
                 {item}
               </motion.li>
@@ -438,14 +573,13 @@ function App() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const id = entry.target.getAttribute('id') || 'home'
-            entry.target.classList.add('is-visible')
             if (scrollTarget.current && scrollTarget.current !== id) return
             scrollTarget.current = null
             setActiveSection(id)
           }
         })
       },
-      { threshold: 0.35 }
+      { rootMargin: '-45% 0px -50% 0px' }
     )
 
     sections.forEach((section) => observer.observe(section))
@@ -481,121 +615,116 @@ function App() {
 
       <main>
         <section id="home" className="hero" data-section>
-          <div className="hero-copy">
-            <p className="eyebrow">ENGINEERING SCALABLE BACKEND SYSTEMS</p>
-            <h1>
-              I design and build scalable backend systems that power reliable digital products.
-            </h1>
-            <p className="lede">
-              Backend and DevOps engineer specializing in microservices,
-              cloud-native architecture, containerized deployments,
-              and resilient distributed systems.
-            </p>
-            <div className="hero-actions">
-              <LiquidMetalButton label="Explore my work" onClick={() => window.location.assign('#projects')} />
-              <LiquidMetalButton label="View resume" onClick={() => window.location.assign('#resume')} />
-            </div>
-            <div className="hero-metrics">
-              <div className="metric">
-                <p className="metricTime">3rd year</p>
-                <p className="metricName">Student of M.Tech(AI & DS)</p>
-              </div>
-              <div className="metric">
-                <p className="metricTime">3 months</p>
-                <p className="metricName">Full-stack Internship</p>
-              </div>
-              <div className="metric">
-                <p className="metricTime">10+</p>
-                <p className="metricName">Projects build</p>
-              </div>
-            </div>
-          </div>
-          <div className="hero-visual">
-            <div className="orb"></div>
-            <div className="stack-card">
-              <div className="stack-card-inner">
-                <p className="label">Now working on</p>
-                <h3>Distributed Backend Systems</h3>
-                <p>
-                  Building scalable backend infrastructure with microservices, service discovery, container orchestration, and automated deployment pipelines.
-                </p>
-                <div className="chip-row">
-                  <span>Spring Boot</span>
-                  <span>Microservices</span>
-                  <span>Docker</span>
-                  <span>Redis</span>
-                  <span>Kafka</span>
-                </div>
+          <MotionConfig reducedMotion="user">
+            <div className="hero-copy">
+              <motion.p className="eyebrow hero-eyebrow" {...fadeUp(0)}>
+                <span className="section-index">01</span>
+                Engineering scalable backend systems
+              </motion.p>
+              <RevealTitle
+                as="h1"
+                className="hero-title"
+                text="I design and build *scalable* backend systems that power *reliable* digital products."
+              />
+              <motion.p className="lede" {...fadeUp(0.3)}>
+                Backend and DevOps engineer specializing in microservices, cloud-native architecture,
+                containerized deployments, and resilient distributed systems.
+              </motion.p>
+              <motion.div className="hero-actions" {...fadeUp(0.35)}>
+                <LiquidMetalButton label="Explore my work" onClick={() => window.location.assign('#projects')} />
+                <LiquidMetalButton label="View resume" onClick={() => window.location.assign('#resume')} />
+              </motion.div>
+              <div className="hero-metrics">
+                {heroMetrics.map((metric, i) => (
+                  <motion.div key={metric.label} className="metric" {...fadeUp(0.4 + 0.05 * i)}>
+                    <Hairline delay={0.4 + 0.06 * i} />
+                    <CountUp value={metric.value} suffix={metric.suffix} />
+                    <p className="metric-label">{metric.label}</p>
+                  </motion.div>
+                ))}
               </div>
             </div>
-            <div className="floating-panel">
-              <p>Live prototype</p>
-              <div className="progress">
-                <span style={{ width: '72%' }}></span>
-              </div>
-              <div className="panel-footer">
-                <span>72% complete</span>
-                <span>3 days left</span>
-              </div>
-            </div>
-          </div>
+
+            <motion.div
+              className="hero-visual"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease }}
+            >
+              <SystemOrbit />
+              <p className="hero-visual-hint">Hover the stack</p>
+            </motion.div>
+          </MotionConfig>
         </section>
 
         <section id="projects" className="projects" data-section>
-          <div className="section-head">
-            <p className="eyebrow">Selected projects</p>
-            <h2>Scalable backend systems built for real-world workloads.</h2>
-            <div className="filters">
-              {['All', 'Product', 'Web', 'Backend', 'Full-stack'].map((tag) => (
+          <MotionConfig reducedMotion="user">
+            <div className="section-top">
+              <motion.p className="eyebrow" {...fadeUp(0)}>
+                <span className="section-index">02</span>
+                Projects
+              </motion.p>
+              <Hairline className="section-top-line" delay={0.15} />
+              <motion.a
+                className="connect-link"
+                href="https://github.com/HEYDEV001"
+                target="_blank"
+                rel="noreferrer"
+                {...fadeUp(0.125)}
+              >
+                All work on GitHub
+              </motion.a>
+            </div>
+
+            <div className="section-intro">
+              <RevealTitle text="Selected work." />
+              <motion.p className="panel-lede" {...fadeUp(0.175)}>
+                Scalable backend systems built for real-world workloads, from APIs to event-driven microservices.
+              </motion.p>
+            </div>
+
+            <motion.div className="text-tabs" role="tablist" aria-label="Filter projects" {...fadeUp(0.225)}>
+              {projectFilters.map((tag) => (
                 <button
                   key={tag}
-                  onClick={() => setFilter(tag as 'All' | ProjectTag)}
+                  type="button"
+                  role="tab"
+                  aria-selected={filter === tag}
                   className={filter === tag ? 'active' : ''}
+                  onClick={() => setFilter(tag)}
                 >
-                  {tag}
+                  <span className="tab-label">{tag}</span>
+                  <sup className="tab-count">{String(projectCounts[tag]).padStart(2, '0')}</sup>
+                  {filter === tag && (
+                    <motion.span
+                      layoutId="project-filter-line"
+                      className="tab-line"
+                      transition={{ type: 'spring', bounce: 0.15, duration: 0.6 }}
+                    />
+                  )}
                 </button>
               ))}
-            </div>
-          </div>
+            </motion.div>
 
-          <div className="project-grid">
-            {filteredProjects.map((project) => (
-              <article key={project.title} className="project-card">
-                <div className="project-card-inner">
-                  <div className="card-top">
-                    <span className="tag">{project.tag}</span>
-                    <span className="year">{project.year}</span>
-                  </div>
-                  <h3>{project.title}</h3>
-                  <p>{project.description}</p>
-                  <div className="stack">
-                    {project.stack.map((item) => (
-                      <span key={item}>{item}</span>
-                    ))}
-                  </div>
-                  <div className="card-actions">
-                    <a href={project.live} target="_blank" rel="noreferrer">
-                      Live demo
-                    </a>
-                    <a href={project.repo} target="_blank" rel="noreferrer">
-                      Source
-                    </a>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+            <ol className="project-list">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {filteredProjects.map((project, i) => (
+                  <ProjectRow key={project.title} project={project} index={i} />
+                ))}
+              </AnimatePresence>
+            </ol>
+          </MotionConfig>
         </section>
 
         <section id="resume" className="resume" data-section>
           <MotionConfig reducedMotion="user">
-            <div className="resume-top">
+            <div className="section-top">
               <motion.p className="eyebrow" {...fadeUp(0)}>
                 <span className="section-index">03</span>
                 Resume
               </motion.p>
-              <Hairline className="resume-top-line" delay={0.15} />
-              <motion.div {...fadeUp(0.25)}>
+              <Hairline className="section-top-line" delay={0.15} />
+              <motion.div {...fadeUp(0.125)}>
                 <a className="cta-pill cta-pill--small" href="/dev_pathak_resume.pdf" download>
                   Download PDF
                   <span className="cta-icon cta-icon--down">
@@ -606,14 +735,14 @@ function App() {
               </motion.div>
             </div>
 
-            <div className="resume-head">
+            <div className="section-intro">
               <RevealTitle text="Experience, skills & education." />
-              <motion.p className="panel-lede" {...fadeUp(0.35)}>
+              <motion.p className="panel-lede" {...fadeUp(0.175)}>
                 Designing and operating scalable backend systems, from first commit to production.
               </motion.p>
             </div>
 
-            <motion.div className="resume-tabs" role="tablist" aria-label="Resume sections" {...fadeUp(0.45)}>
+            <motion.div className="text-tabs" role="tablist" aria-label="Resume sections" {...fadeUp(0.225)}>
               {resumeTabs.map((tab) => (
                 <button
                   key={tab}
@@ -640,10 +769,10 @@ function App() {
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={resumeTab}
-                  initial={{ opacity: 0, y: 16, filter: 'blur(8px)' }}
+                  initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, y: -12, filter: 'blur(8px)' }}
-                  transition={{ duration: 0.45, ease }}
+                  exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.25, ease }}
                 >
                   {resumeTab === 'Experience' && (
                     <Timeline>
@@ -665,7 +794,7 @@ function App() {
                     <div className="skill-list">
                       {skillGroups.map((group, i) => (
                         <motion.div key={group.title} className="skill-row" {...rowReveal(i)}>
-                          <Hairline delay={0.08 * i} />
+                          <Hairline delay={0.05 * i} />
                           <div className="skill-row-head">
                             <span className="row-index">{String(i + 1).padStart(2, '0')}</span>
                             <h3>{group.title}</h3>
@@ -677,7 +806,7 @@ function App() {
                                 initial={{ opacity: 0, y: 8 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: 0.08 * i + 0.03 * j + 0.15, ease }}
+                                transition={{ duration: 0.45, delay: 0.04 * i + 0.02 * j + 0.1, ease }}
                               >
                                 {item}
                               </motion.li>
@@ -721,11 +850,11 @@ function App() {
 
               <RevealTitle text="Let’s build something that scales." />
 
-              <motion.p className="panel-lede" {...fadeUp(0.35)}>
+              <motion.p className="panel-lede" {...fadeUp(0.175)}>
                 Open to backend engineering, distributed systems, and scalable infrastructure projects.
               </motion.p>
 
-              <motion.button type="button" className="email-line" onClick={handleCopy} {...fadeUp(0.45)}>
+              <motion.button type="button" className="email-line" onClick={handleCopy} {...fadeUp(0.225)}>
                 <span className="email-text">devpathak9685@gmail.com</span>
                 <span className="email-hint">
                   <AnimatePresence mode="wait" initial={false}>
@@ -743,7 +872,7 @@ function App() {
                 </span>
               </motion.button>
 
-              <motion.div className="connect-actions" {...fadeUp(0.55)}>
+              <motion.div className="connect-actions" {...fadeUp(0.275)}>
                 <a className="cta-pill" href="mailto:devpathak9685@gmail.com">
                   Start a conversation
                   <span className="cta-icon">
@@ -757,7 +886,7 @@ function App() {
               </motion.div>
 
               <div className="connect-bottom">
-                <motion.dl className="connect-meta" {...fadeUp(0.1)}>
+                <motion.dl className="connect-meta" {...fadeUp(0.05)}>
                   <div>
                     <dt>Based in</dt>
                     <dd>Indore, India</dd>
@@ -780,8 +909,8 @@ function App() {
                       key={social.name}
                       initial={{ opacity: 0, y: 18 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.8 }}
-                      transition={{ duration: 0.8, delay: 0.08 * i, ease }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ duration: 0.5, delay: 0.05 * i, ease }}
                     >
                       <a className="social-row" href={social.url} target="_blank" rel="noreferrer">
                         <span className="social-index">{String(i + 1).padStart(2, '0')}</span>

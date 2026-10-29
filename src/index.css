@@ -5,19 +5,19 @@
 @tailwind utilities;
 
 :root {
-  /* Palette: #81A6C6 #AACDDC #F3E3D0 #D2C4B4 */
-  --bg: linear-gradient(150deg, #81a6c6 0%, #aacddc 35%, #f3e3d0 70%, #d2c4b4 100%);
-  --surface: #f6f5f5;
-  --surface-alt: #aacddc;
-  --surface-strong: #81a6c6;
+  /* Palette: #DB9558 #FCF9EA #97A87A #A8BBA3 */
+  --bg: linear-gradient(150deg, #97a87a 0%, #a8bba3 35%, #fcf9ea 72%, #f0d6bb 100%);
+  --surface: #fcf9ea;
+  --surface-alt: #a8bba3;
+  --surface-strong: #97a87a;
   --text-strong: #000000;
   --text-muted: rgba(0, 0, 0, 0.7);
   --text-on-light: #000000;
   --text-on-light-muted: rgba(0, 0, 0, 0.6);
-  --accent: #81a6c6;
+  --accent: #db9558;
 
   /* Derived values */
-  --accent-soft: rgba(12, 42, 64, 0.22);
+  --accent-soft: rgba(219, 149, 88, 0.22);
   --border: rgba(0, 0, 0, 0.08);
   --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.06);
   --shadow-strong: 0 20px 45px rgba(0, 0, 0, 0.12);
@@ -50,9 +50,9 @@ body::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(720px circle at var(--mx) var(--my), rgba(129, 166, 198, 0.32), transparent 64%),
-    radial-gradient(980px circle at 12% 16%, rgba(129, 166, 198, 0.24), transparent 66%),
-    radial-gradient(1100px circle at 88% 8%, rgba(170, 205, 220, 0.32), transparent 60%);
+    radial-gradient(720px circle at var(--mx) var(--my), rgba(219, 149, 88, 0.18), transparent 64%),
+    radial-gradient(980px circle at 12% 16%, rgba(151, 168, 122, 0.28), transparent 66%),
+    radial-gradient(1100px circle at 88% 8%, rgba(168, 187, 163, 0.32), transparent 60%);
   transition: background 650ms cubic-bezier(0.16, 0.84, 0.27, 1);
 }
 
@@ -82,5 +82,5 @@ img {
 }
 
 ::selection {
-  background: rgba(58, 73, 218, 0.2);
+  background: rgba(219, 149, 88, 0.3);
 }

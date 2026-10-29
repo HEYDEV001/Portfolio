@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { FileText, FolderGit2 } from 'lucide-react'
 import './App.css'
 import { LiquidMetalButton } from '@/components/ui/liquid-metal-button'
 import { CursorSparkles } from '@/components/ui/cursor-sparkles'
+import { LiquidNavbar, NimbusIcons, type LiquidNavItem } from '@/components/ui/liquid-glass-navbar'
 
 type ProjectTag = 'Product' | 'Web' | 'Backend' | 'Full-stack'
 
@@ -45,6 +47,13 @@ type Social = {
   note: string
   logo: string
 }
+
+const navSections: (LiquidNavItem & { id: string })[] = [
+  { id: 'home', label: 'Home', href: '#home', icon: NimbusIcons.home, fx: 'glow' },
+  { id: 'projects', label: 'Projects', href: '#projects', icon: <FolderGit2 size={18} strokeWidth={1.8} />, fx: 'spin' },
+  { id: 'resume', label: 'Resume', href: '#resume', icon: <FileText size={18} strokeWidth={1.8} />, fx: 'drop' },
+  { id: 'connect', label: 'Connect', href: '#connect', icon: NimbusIcons.plane, fx: 'plane' },
+]
 
 const projects: Project[] = [
   {
@@ -240,6 +249,19 @@ function App() {
   const [filter, setFilter] = useState<'All' | ProjectTag>('All')
   const [resumeTab, setResumeTab] = useState<ResumeTab>('Experience')
   const [copied, setCopied] = useState(false)
+  // While smooth-scrolling to a clicked section, ignore the sections passed on the way
+  const scrollTarget = useRef<string | null>(null)
+  const scrollTimer = useRef<number | undefined>(undefined)
+
+  const handleNavChange = (index: number) => {
+    const id = navSections[index].id
+    setActiveSection(id)
+    scrollTarget.current = id
+    window.clearTimeout(scrollTimer.current)
+    scrollTimer.current = window.setTimeout(() => {
+      scrollTarget.current = null
+    }, 1200)
+  }
 
   const handleCopy = async () => {
     try {
@@ -265,8 +287,11 @@ function App() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target.getAttribute('id') || 'home')
+            const id = entry.target.getAttribute('id') || 'home'
             entry.target.classList.add('is-visible')
+            if (scrollTarget.current && scrollTarget.current !== id) return
+            scrollTarget.current = null
+            setActiveSection(id)
           }
         })
       },
@@ -300,22 +325,15 @@ function App() {
             <p className="brand-sub">Backend + DevOps Engineer</p>
           </div>
         </div>
-        <nav className="nav-links">
-          {[
-            ['home', 'Home'],
-            ['projects', 'Projects'],
-            ['resume', 'Resume'],
-            ['connect', 'Connect'],
-          ].map(([id, label]) => (
-            <a
-              key={id}
-              href={`#${id}`}
-              className={activeSection === id ? 'active' : ''}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
+        <div className="nav-links">
+          <LiquidNavbar
+            tone="light"
+            items={navSections}
+            active={Math.max(0, navSections.findIndex((section) => section.id === activeSection))}
+            onChange={handleNavChange}
+            style={{ fontFamily: 'var(--body)' }}
+          />
+        </div>
         <LiquidMetalButton
           label="Start a project"
           onClick={() => window.location.assign('#connect')}

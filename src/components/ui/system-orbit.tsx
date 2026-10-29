@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { memo, useEffect, useRef, useState, type CSSProperties } from 'react'
 import {
   AnimatePresence,
   motion,
   useMotionValue,
   useReducedMotion,
   useSpring,
+  useInView,
   useTime,
   useTransform,
   type MotionValue,
@@ -69,8 +70,16 @@ type LinkProps = {
   animated: boolean
 }
 
-function OrbitLink({ node, index, sx, sy, cx, cy, active, animated }: LinkProps) {
-  const { x, y } = useNodePosition(node, sx, sy)
+type PacketProps = {
+  index: number
+  x: MotionValue<number>
+  y: MotionValue<number>
+  cx: MotionValue<number>
+  cy: MotionValue<number>
+}
+
+// Lives in its own component because useTime ticks every frame; unmounting it stops the loop
+function OrbitPacket({ index, x, y, cx, cy }: PacketProps) {
   const time = useTime()
   // Alternate direction so some packets flow in to the core and some flow out
   const t = useTransform(time, (ms) => {
@@ -80,6 +89,12 @@ function OrbitLink({ node, index, sx, sy, cx, cy, active, animated }: LinkProps)
   const packetX = useTransform(() => x.get() + (cx.get() - x.get()) * t.get())
   const packetY = useTransform(() => y.get() + (cy.get() - y.get()) * t.get())
   const packetOpacity = useTransform(t, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
+
+  return <motion.circle className="orbit-packet" r={0.7} cx={packetX} cy={packetY} style={{ opacity: packetOpacity }} />
+}
+
+function OrbitLink({ node, index, sx, sy, cx, cy, active, animated }: LinkProps) {
+  const { x, y } = useNodePosition(node, sx, sy)
 
   return (
     <g className={cn('orbit-link', active && 'is-active')}>
@@ -93,9 +108,7 @@ function OrbitLink({ node, index, sx, sy, cx, cy, active, animated }: LinkProps)
         animate={{ pathLength: 1, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.25 + index * 0.06, ease }}
       />
-      {animated && (
-        <motion.circle className="orbit-packet" r={0.7} cx={packetX} cy={packetY} style={{ opacity: packetOpacity }} />
-      )}
+      {animated && <OrbitPacket index={index} x={x} y={y} cx={cx} cy={cy} />}
     </g>
   )
 }
@@ -138,13 +151,14 @@ function OrbitNode({ node, index, sx, sy, size, active, onActive }: NodeProps) {
   )
 }
 
-function RequestTicker() {
+function RequestTicker({ running }: { running: boolean }) {
   const [i, setI] = useState(0)
 
   useEffect(() => {
+    if (!running) return
     const id = window.setInterval(() => setI((n) => (n + 1) % requests.length), 2400)
     return () => window.clearInterval(id)
-  }, [])
+  }, [running])
 
   const req = requests[i]
 
@@ -172,10 +186,12 @@ function RequestTicker() {
   )
 }
 
-export function SystemOrbit({ className }: { className?: string }) {
+export const SystemOrbit = memo(function SystemOrbit({ className }: { className?: string }) {
   const stage = useRef<HTMLDivElement>(null)
   const reduceMotion = useReducedMotion()
   const [active, setActive] = useState<number | null>(null)
+  // Everything that ticks (packets, ticker, CSS loops, parallax) idles while the hero is off screen
+  const inView = useInView(stage, { margin: '100px' })
 
   const px = useMotionValue(0)
   const py = useMotionValue(0)
@@ -197,7 +213,7 @@ export function SystemOrbit({ className }: { className?: string }) {
 
   // The whole page drives the parallax, so the system leans toward the cursor wherever it is
   useEffect(() => {
-    if (reduceMotion || !window.matchMedia('(pointer: fine)').matches) return
+    if (!inView || reduceMotion || !window.matchMedia('(pointer: fine)').matches) return
     const onMove = (event: PointerEvent) => {
       const rect = stage.current?.getBoundingClientRect()
       if (!rect) return
@@ -206,12 +222,12 @@ export function SystemOrbit({ className }: { className?: string }) {
     }
     window.addEventListener('pointermove', onMove)
     return () => window.removeEventListener('pointermove', onMove)
-  }, [px, py, reduceMotion])
+  }, [px, py, inView, reduceMotion])
 
   const activeNode = active === null ? null : nodes[active]
 
   return (
-    <div ref={stage} className={cn('orbit', className)} aria-hidden="true">
+    <div ref={stage} className={cn('orbit', !inView && 'is-paused', className)} aria-hidden="true">
       <div className="orbit-glow" />
 
       <svg className="orbit-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -231,7 +247,7 @@ export function SystemOrbit({ className }: { className?: string }) {
             cx={cx}
             cy={cy}
             active={active === i}
-            animated={!reduceMotion}
+            animated={inView && !reduceMotion}
           />
         ))}
       </svg>
@@ -277,8 +293,8 @@ export function SystemOrbit({ className }: { className?: string }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6, ease }}
       >
-        <RequestTicker />
+        <RequestTicker running={inView} />
       </motion.div>
     </div>
   )
-}
+})

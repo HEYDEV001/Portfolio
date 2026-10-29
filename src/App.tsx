@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import { memo, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import {
   AnimatePresence,
   MotionConfig,
@@ -395,7 +395,7 @@ function CountUp({ value, suffix, prefix, decimals = 0 }: CountUpProps) {
   )
 }
 
-function ProjectRow({ project, index }: { project: Project; index: number }) {
+const ProjectRow = memo(function ProjectRow({ project, index }: { project: Project; index: number }) {
   // Feeds the cursor position to the CSS spotlight behind the row
   const trackCursor = (event: MouseEvent<HTMLLIElement>) => {
     const rect = event.currentTarget.getBoundingClientRect()
@@ -456,7 +456,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
       </div>
     </motion.li>
   )
-}
+})
 
 function Hairline({ className = '', delay = 0 }: { className?: string; delay?: number }) {
   return (
@@ -496,7 +496,7 @@ type TimelineRowProps = {
   points?: string[]
 }
 
-function TimelineRow({ index, meta, title, sub, text, points }: TimelineRowProps) {
+const TimelineRow = memo(function TimelineRow({ index, meta, title, sub, text, points }: TimelineRowProps) {
   return (
     <motion.li className="resume-row" {...rowReveal(index)}>
       <div className="row-meta">
@@ -539,7 +539,7 @@ function TimelineRow({ index, meta, title, sub, text, points }: TimelineRowProps
       </div>
     </motion.li>
   )
-}
+})
 
 const istTime = new Intl.DateTimeFormat('en-IN', {
   hour: '2-digit',
@@ -576,7 +576,7 @@ function Brand({ onSelect }: { onSelect: () => void }) {
   return (
     <a className="brand" href="#home" onClick={onSelect} aria-label="Dev Pathak, back to top">
       <span className="brand-mark" aria-hidden="true">
-        <img src={avatar} alt="" width={40} height={40} />
+        <img src={avatar} alt="" width={40} height={40} decoding="async" />
       </span>
       <span className="brand-text" aria-hidden="true">
         <span className="brand-title">
@@ -610,15 +610,55 @@ function Brand({ onSelect }: { onSelect: () => void }) {
   )
 }
 
+function SiteHeader({ active, onNavChange }: { active: number; onNavChange: (index: number) => void }) {
+  const [scrolled, setScrolled] = useState(false)
+  const { scrollY } = useScroll()
+
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 24))
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <header className={`nav${scrolled ? ' is-scrolled' : ''}`}>
+        <ScrollProgress />
+        <motion.div
+          className="nav-brand"
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease }}
+        >
+          <Brand onSelect={() => onNavChange(0)} />
+        </motion.div>
+        {/* Plain wrapper: an opacity or transform here would cut the navbar's backdrop refraction */}
+        <div className="nav-links">
+          <LiquidNavbar
+            tone="light"
+            items={navSections}
+            active={active}
+            onChange={onNavChange}
+            style={{ fontFamily: 'var(--body)' }}
+          />
+        </div>
+        <motion.div
+          className="nav-cta"
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.08, ease }}
+        >
+          <LiquidMetalButton
+            label="Start a project"
+            onClick={() => window.location.assign('#connect')}
+          />
+        </motion.div>
+      </header>
+    </MotionConfig>
+  )
+}
+
 function App() {
   const [activeSection, setActiveSection] = useState('home')
   const [filter, setFilter] = useState<'All' | ProjectTag>('All')
   const [resumeTab, setResumeTab] = useState<ResumeTab>('Experience')
   const [copied, setCopied] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const { scrollY } = useScroll()
-
-  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 24))
   // While smooth-scrolling to a clicked section, ignore the sections passed on the way
   const scrollTarget = useRef<string | null>(null)
   const scrollTimer = useRef<number | undefined>(undefined)
@@ -674,41 +714,11 @@ function App() {
 
   return (
     <div className="app">
-      <AuroraBackground className="fixed inset-0 -z-10 h-auto" aria-hidden="true" />
-      <MotionConfig reducedMotion="user">
-        <header className={`nav${scrolled ? ' is-scrolled' : ''}`}>
-          <ScrollProgress />
-          <motion.div
-            className="nav-brand"
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease }}
-          >
-            <Brand onSelect={() => handleNavChange(0)} />
-          </motion.div>
-          {/* Plain wrapper: an opacity or transform here would cut the navbar's backdrop refraction */}
-          <div className="nav-links">
-            <LiquidNavbar
-              tone="light"
-              items={navSections}
-              active={Math.max(0, navSections.findIndex((section) => section.id === activeSection))}
-              onChange={handleNavChange}
-              style={{ fontFamily: 'var(--body)' }}
-            />
-          </div>
-          <motion.div
-            className="nav-cta"
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.08, ease }}
-          >
-            <LiquidMetalButton
-              label="Start a project"
-              onClick={() => window.location.assign('#connect')}
-            />
-          </motion.div>
-        </header>
-      </MotionConfig>
+      <AuroraBackground className="fixed inset-0 -z-10 h-auto [contain:strict]" aria-hidden="true" />
+      <SiteHeader
+        active={Math.max(0, navSections.findIndex((section) => section.id === activeSection))}
+        onNavChange={handleNavChange}
+      />
 
       <main>
         <section id="home" className="hero" data-section>

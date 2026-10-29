@@ -336,6 +336,13 @@ section {
   background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(224, 236, 251, 0.7) 45%, transparent 70%);
   filter: blur(28px);
   animation: orbit-breathe 9s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* The hero's loops idle while it is off screen */
+.orbit.is-paused,
+.orbit.is-paused * {
+  animation-play-state: paused !important;
 }
 
 .orbit-svg {
@@ -1145,9 +1152,8 @@ section {
   margin: 0 auto;
   padding: clamp(28px, 5vw, 72px);
   border-radius: 48px;
-  background: rgba(255, 255, 255, 0.62);
-  -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  backdrop-filter: blur(24px) saturate(1.2);
+  /* No backdrop blur: the aurora behind animates, so a blur here would be recomputed every frame */
+  background: rgba(255, 255, 255, 0.74);
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 0 1px var(--border), var(--shadow-soft);
 }

@@ -6,11 +6,13 @@ import {
   motion,
   useInView,
   useReducedMotion,
+  useMotionValueEvent,
   useScroll,
   useSpring,
 } from 'framer-motion'
 import { ArrowDown, ArrowUpRight, Check, Copy, FileText, FolderGit2 } from 'lucide-react'
 import './App.css'
+import avatar from '@/assets/avatar.jpg'
 import { LiquidMetalButton } from '@/components/ui/liquid-metal-button'
 import { AuroraBackground } from '@/components/ui/aurora-background'
 import { SystemOrbit } from '@/components/ui/system-orbit'
@@ -21,14 +23,14 @@ type ProjectTag = 'Product' | 'Web' | 'Backend' | 'Full-stack'
 type Project = {
   title: string
   tag: ProjectTag
-  year: string
+  year?: string
   description: string
   stack: string[]
   live: string
   repo: string
 }
 
-type ResumeTab = 'Experience' | 'Skills' | 'Education'
+type ResumeTab = 'Experience' | 'Skills' | 'Education' | 'Achievements'
 
 type Experience = {
   company: string
@@ -45,10 +47,18 @@ type SkillGroup = {
 }
 
 type Education = {
+  degree: string
   school: string
-  credential: string
   period: string
+  location?: string
   note: string
+}
+
+type Achievement = {
+  title: string
+  issuer: string
+  meta: string[]
+  note?: string
 }
 
 type Social = {
@@ -66,32 +76,41 @@ const navSections: (LiquidNavItem & { id: string })[] = [
 
 const projects: Project[] = [
   {
-    title: 'Staylio',
-    tag: 'Backend',
-    year: '2025',
-    description:
-        'Backend system for an Airbnb-style accommodation platform handling property listings, booking workflows, user authentication, and reservation management through scalable APIs.',
-    stack: ['Spring Boot', 'Postgres', 'JWT', 'JAVA'],
-    live: '#',
-    repo: 'https://github.com/HEYDEV001/Staylio-Backend',
-  },
-  {
     title: 'Sphere',
     tag: 'Backend',
     year: '2026',
     description:
-        'Distributed backend system for a professional networking platform using microservices, API gateway routing, and containerized deployment.',
-    stack: ['Spring Boot', 'Postgres', 'JWT', 'JAVA','Kafka', 'Redis', 'Microservice Architecture'],
+      'A 4-service professional networking platform. Redis write bucketing and an async Kafka notification pipeline cut API response times by ~50–70%, with ELK and Zipkin for logging and distributed tracing.',
+    stack: ['Java', 'Spring Boot', 'Spring Cloud', 'OpenFeign', 'Kafka', 'Redis', 'Resilience4j', 'ELK', 'Zipkin', 'Docker', 'Kubernetes'],
     live: '#',
     repo: 'https://github.com/HEYDEV001/Sphere',
+  },
+  {
+    title: 'Click N Go',
+    tag: 'Full-stack',
+    description:
+      'A local services booking platform with the complete search-to-confirmation flow, REST APIs for bookings and authentication, and a reusable service-category architecture.',
+    stack: ['React', 'Node.js', 'Express', 'REST APIs'],
+    live: 'https://click-n-go-frontend-skd2.vercel.app/',
+    repo: 'https://github.com/HEYDEV001/ClickNGo-Complete',
+  },
+  {
+    title: 'Staylio',
+    tag: 'Backend',
+    year: '2025',
+    description:
+      'A property booking backend powering end-to-end reservation flows, with JWT authentication, role-based host and guest access, and Stripe checkout with webhook processing.',
+    stack: ['Java', 'Spring Boot', 'PostgreSQL', 'JWT', 'Stripe', 'Docker'],
+    live: '#',
+    repo: 'https://github.com/HEYDEV001/Staylio-Backend',
   },
   {
     title: 'ECom',
     tag: 'Backend',
     year: '2026',
     description:
-        'Scalable e-commerce backend managing product catalogs, order workflows, inventory updates, and secure user authentication through high-performance APIs.',
-    stack: ['Spring Boot', 'Postgres', 'JWT', 'JAVA','Kafka', 'Redis', 'Microservice Architecture', 'WebSocket'],
+      'Scalable e-commerce backend managing product catalogs, order workflows, inventory updates, and secure user authentication through high-performance APIs.',
+    stack: ['Java', 'Spring Boot', 'PostgreSQL', 'JWT', 'Kafka', 'Redis', 'Microservices', 'WebSocket'],
     live: '#',
     repo: 'https://github.com/HEYDEV001/Ecommerce',
   },
@@ -100,8 +119,8 @@ const projects: Project[] = [
     tag: 'Backend',
     year: '2025',
     description:
-        'AI-powered backend service for agricultural assistance that processes farmer queries, integrates ML APIs, and manages data through scalable microservices.',
-    stack: ['Spring Boot', 'MySQL', 'JWT', 'JAVA'],
+      'AI-powered backend service for agricultural assistance that processes farmer queries, integrates ML APIs, and manages data through scalable microservices.',
+    stack: ['Java', 'Spring Boot', 'MySQL', 'JWT'],
     live: '#',
     repo: 'https://github.com/HEYDEV001/SIH-KrishiSetu',
   },
@@ -109,21 +128,31 @@ const projects: Project[] = [
 
 const experience: Experience[] = [
   {
-    company: 'Ayurherb',
-    role: 'Full-Stack Developer Intern',
-    location: 'Remote',
-    period: '3-Month Internship (2025)',
-    summary:
-      'Worked with a startup team to develop and manage web platforms for business operations.',
+    company: 'Meyvex Media Private Ltd.',
+    role: 'Full-Stack Developer',
+    location: 'On-site',
+    period: 'Aug 2026 — Present',
+    summary: 'Building production websites end-to-end, working directly with clients from requirements to launch.',
     highlights: [
-      'Built and deployed multiple websites for the company using modern web technologies.',
-      'Developed both frontend and backend features to support product and business requirements.',
-      'Managed website maintenance, updates, and performance improvements.',
+      'Built and delivered 3 client websites end-to-end, translating client requirements into production-ready builds.',
+      'Independently designed and built Meyvex Media’s own company website from the ground up.',
+    ],
+  },
+  {
+    company: 'TheAyurherb',
+    role: 'Full-Stack Intern',
+    location: 'Remote',
+    period: 'Jul 2025 — Oct 2025',
+    summary: 'Shipped backend features and improved API performance in a production Node.js/Express service.',
+    highlights: [
+      'Reduced API response time by 15% on the search endpoint by profiling query execution and optimizing backend logic.',
+      'Cut post-release defect reports by testing API endpoints and UI flows against edge cases before every deployment.',
+      'Partnered with backend and frontend engineers to scope, troubleshoot, and ship shared features on time.',
     ],
   },
   {
     company: 'GDG (Google Developers Group)',
-    role: 'Web Development Lead ',
+    role: 'Web Development Lead',
     location: 'DAVV Indore, IN',
     period: '2024 — 2025',
     summary:
@@ -139,93 +168,83 @@ const experience: Experience[] = [
 
 const skillGroups: SkillGroup[] = [
   {
-    title: 'Frontend Development',
-    items: [
-      'React.js',
-      'Next.js',
-      'JavaScript',
-      'TypeScript',
-      'HTML',
-      'CSS',
-      'Responsive UI Development',
-      'Component-based Architecture'
-    ],
+    title: 'Languages',
+    items: ['Java', 'JavaScript', 'TypeScript', 'Python'],
   },
   {
-    title: 'Backend Development',
-    items: [
-      'Node.js',
-      'Express.js',
-      'Spring Boot',
-      'Spring AI',
-      'REST API Development',
-      'Microservices Architecture'
-    ],
+    title: 'Frameworks',
+    items: ['Spring Boot', 'Spring Security', 'React.js', 'Node.js', 'Express.js', 'Tailwind CSS', 'JUnit 5', 'Mockito'],
   },
   {
-    title: 'Databases & Caching',
+    title: 'Systems & Integration',
     items: [
-      'MongoDB',
-      'PostgreSQL',
-      'SQL',
-      'Redis'
-    ],
-  },
-  {
-    title: 'DevOps & Cloud',
-    items: [
-      'Docker',
-      'Kubernetes',
-      'CI/CD',
-      'Containerized Deployments'
-    ],
-  },
-  {
-    title: 'Distributed Systems',
-    items: [
+      'Microservices',
+      'System Design',
+      'Spring Cloud',
+      'OpenFeign',
+      'REST APIs',
       'Apache Kafka',
-      'Event Streaming',
-      'Microservices Communication'
+      'ELK Stack',
+      'Zipkin',
+      'Micrometer',
+      'Rate Limiting',
     ],
   },
   {
-    title: 'Programming & Problem Solving',
-    items: [
-      'Java',
-      'C',
-      'C++',
-      'Data Structures & Algorithms (DSA)'
-    ],
-  }
+    title: 'Databases',
+    items: ['SQL', 'PostgreSQL', 'MongoDB', 'MySQL', 'Redis', 'Neo4j'],
+  },
+  {
+    title: 'DevOps & Tools',
+    items: ['Docker', 'Kubernetes', 'GitHub Actions (CI/CD)', 'Git & GitHub'],
+  },
+  {
+    title: 'Core CS',
+    items: ['Data Structures & Algorithms', 'OOP', 'Computer Networks', 'Operating Systems', 'DBMS'],
+  },
 ]
 
 const education: Education[] = [
   {
-    school: "M.Tech (Integrated) – Artificial Intelligence & Data Science",
-    credential: "Devi Ahilya Vishwavidyalaya (DAVV), Indore",
-    period: "Aug 2023 – Present",
-    note: "Specializing in Artificial Intelligence and Data Science.Focused on scalable systems, machine learning, and software engineering.",
+    degree: 'M.Tech (Integrated) – Artificial Intelligence & Data Science',
+    school: 'Devi Ahilya Vishwavidyalaya (DAVV), Indore',
+    period: 'Aug 2023 – Present',
+    note: 'Specializing in Artificial Intelligence and Data Science. Focused on scalable systems, machine learning, and software engineering.',
   },
   {
-    school: "Higher Secondary (Class XII)",
-    credential: "Maharishi Vidya Mandir, Chhatarpur, Madhya Pradesh",
-    period: "Apr 2022 – Feb 2023",
-    note:
-      "Completed senior secondary education with focus on science stream."
+    degree: 'Higher Secondary Examination',
+    school: 'Maharishi Vidya Mandir',
+    period: '2023',
+    location: 'Chhatarpur, India',
+    note: 'Scored 84.6%',
   },
   {
-    school: "Secondary School (Class X)",
-    credential: "Takshashila Public Model High School, Nowgong, Chhatarpur, Madhya Pradesh",
-    period: "Apr 2020 – Mar 2021",
+    degree: 'Secondary School (Class X)',
+    school: 'Takshashila Public Model High School, Nowgong, Chhatarpur, Madhya Pradesh',
+    period: 'Apr 2020 – Mar 2021',
+    note: 'Scored 87.8%',
+  },
+]
+
+const achievements: Achievement[] = [
+  {
+    title: 'Semifinalist, Software Development Track',
+    issuer: 'Flipkart GRiD 8.0',
+    meta: ['Top ~1%', 'National'],
     note:
-      "Completed foundational secondary education."
-  }
+      'Cleared profile screening and a proctored DSA coding assessment to place among the top ~1,500 of 165,730+ national registrants.',
+  },
+  {
+    title: 'Spring Boot Developer Cohort 3.0',
+    issuer: 'Coding Shuttle',
+    meta: ['Certification'],
+  },
 ]
 
 const socials: Social[] = [
   {
     name: 'LinkedIn',
-    handle: 'linkedin.com/in/Dev Pathak',
+    handle: 'linkedin.com/in/dev-pathak',
     url: 'https://www.linkedin.com/in/dev-pathak-17b067296/',
   },
   {
@@ -235,8 +254,8 @@ const socials: Social[] = [
   },
   {
     name: 'X (Twitter)',
-    handle: 'x.com/your-handle',
-    url: 'https://x.com/your-handle',
+    handle: 'x.com/HEYDEV001',
+    url: 'https://x.com/HEYDEV001',
   },
   {
     name: 'Instagram',
@@ -246,17 +265,18 @@ const socials: Social[] = [
 ]
 
 const heroMetrics = [
-  { value: 3, suffix: 'rd', label: 'Year of M.Tech (AI & DS)' },
-  { value: 3, suffix: 'mo', label: 'Full-stack internship' },
-  { value: 10, suffix: '+', label: 'Projects built' },
+  { value: 70, suffix: '%', label: 'Faster APIs with Redis + Kafka' },
+  { value: 1, prefix: 'Top ', suffix: '%', label: 'Flipkart GRiD 8.0, of 165k+' },
+  { value: 8.42, decimals: 2, suffix: '', label: 'CGPA, M.Tech AI & DS' },
 ]
 
 const marqueeWords = [
   'Backend engineering',
   'Distributed systems',
   'Microservices',
-  'DevOps',
-  'Cloud-native',
+  'System design',
+  'Observability',
+  'Spring Boot',
   'Kafka',
   'Kubernetes',
 ]
@@ -279,12 +299,13 @@ const projectCounts = Object.fromEntries(
   ])
 ) as Record<'All' | ProjectTag, number>
 
-const resumeTabs: ResumeTab[] = ['Experience', 'Skills', 'Education']
+const resumeTabs: ResumeTab[] = ['Experience', 'Skills', 'Education', 'Achievements']
 
 const resumeCounts: Record<ResumeTab, number> = {
   Experience: experience.length,
   Skills: skillGroups.length,
   Education: education.length,
+  Achievements: achievements.length,
 }
 
 const rowReveal = (i: number) => ({
@@ -339,7 +360,14 @@ function RevealTitle({ text, as = 'h2', className = '' }: RevealTitleProps) {
   )
 }
 
-function CountUp({ value, suffix }: { value: number; suffix: string }) {
+type CountUpProps = {
+  value: number
+  suffix: string
+  prefix?: string
+  decimals?: number
+}
+
+function CountUp({ value, suffix, prefix, decimals = 0 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.8 })
   const reduceMotion = useReducedMotion()
@@ -352,15 +380,16 @@ function CountUp({ value, suffix }: { value: number; suffix: string }) {
       delay: reduceMotion ? 0 : 0.3,
       ease,
       onUpdate: (v) => {
-        node.textContent = String(Math.round(v))
+        node.textContent = v.toFixed(decimals)
       },
     })
     return () => controls.stop()
-  }, [inView, value, reduceMotion])
+  }, [inView, value, decimals, reduceMotion])
 
   return (
     <p className="metric-value">
-      <span ref={ref}>0</span>
+      {prefix && <span className="metric-prefix">{prefix}</span>}
+      <span ref={ref}>{(0).toFixed(decimals)}</span>
       <span className="metric-suffix">{suffix}</span>
     </p>
   )
@@ -413,7 +442,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
         </div>
 
         <div className="project-side">
-          <span className="project-year">{project.year}</span>
+          {project.year && <span className="project-year">{project.year}</span>}
           {project.live !== '#' && (
             <a className="project-live connect-link" href={project.live} target="_blank" rel="noreferrer">
               Live
@@ -463,7 +492,7 @@ type TimelineRowProps = {
   meta: string[]
   title: string
   sub: string
-  text: string
+  text?: string
   points?: string[]
 }
 
@@ -491,7 +520,7 @@ function TimelineRow({ index, meta, title, sub, text, points }: TimelineRowProps
           {sub}
         </p>
         <h3 className="row-title">{title}</h3>
-        <p className="row-text">{text}</p>
+        {text && <p className="row-text">{text}</p>}
         {points && (
           <ul className="row-points">
             {points.map((item, j) => (
@@ -529,11 +558,67 @@ function LocalTime() {
   return <>{time} IST</>
 }
 
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 40, mass: 0.3 })
+  return <motion.span className="scroll-progress" style={{ scaleX }} aria-hidden="true" />
+}
+
+function Brand({ onSelect }: { onSelect: () => void }) {
+  const [showTime, setShowTime] = useState(false)
+
+  // Alternate the subtitle between the role and the local time
+  useEffect(() => {
+    const id = window.setInterval(() => setShowTime((v) => !v), 4000)
+    return () => window.clearInterval(id)
+  }, [])
+
+  return (
+    <a className="brand" href="#home" onClick={onSelect} aria-label="Dev Pathak, back to top">
+      <span className="brand-mark" aria-hidden="true">
+        <img src={avatar} alt="" width={40} height={40} />
+      </span>
+      <span className="brand-text" aria-hidden="true">
+        <span className="brand-title">
+          <span className="text-roll" data-text="Dev Pathak">
+            Dev Pathak
+          </span>
+        </span>
+        <span className="brand-sub">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={showTime ? 'time' : 'role'}
+              className="brand-sub-line"
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: '0%', opacity: 1 }}
+              exit={{ y: '-100%', opacity: 0 }}
+              transition={{ duration: 0.45, ease }}
+            >
+              {showTime ? (
+                <>
+                  <span className="status-dot" />
+                  Indore · <LocalTime />
+                </>
+              ) : (
+                'Backend + Full-Stack Developer'
+              )}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+      </span>
+    </a>
+  )
+}
+
 function App() {
   const [activeSection, setActiveSection] = useState('home')
   const [filter, setFilter] = useState<'All' | ProjectTag>('All')
   const [resumeTab, setResumeTab] = useState<ResumeTab>('Experience')
   const [copied, setCopied] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const { scrollY } = useScroll()
+
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 24))
   // While smooth-scrolling to a clicked section, ignore the sections passed on the way
   const scrollTarget = useRef<string | null>(null)
   const scrollTimer = useRef<number | undefined>(undefined)
@@ -590,28 +675,40 @@ function App() {
   return (
     <div className="app">
       <AuroraBackground className="fixed inset-0 -z-10 h-auto" aria-hidden="true" />
-      <header className="nav">
-        <div className="brand">
-          <span className="badge">Portfolio</span>
-          <div>
-            <p className="brand-title">Dev Pathak</p>
-            <p className="brand-sub">Backend + DevOps Engineer</p>
+      <MotionConfig reducedMotion="user">
+        <header className={`nav${scrolled ? ' is-scrolled' : ''}`}>
+          <ScrollProgress />
+          <motion.div
+            className="nav-brand"
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease }}
+          >
+            <Brand onSelect={() => handleNavChange(0)} />
+          </motion.div>
+          {/* Plain wrapper: an opacity or transform here would cut the navbar's backdrop refraction */}
+          <div className="nav-links">
+            <LiquidNavbar
+              tone="light"
+              items={navSections}
+              active={Math.max(0, navSections.findIndex((section) => section.id === activeSection))}
+              onChange={handleNavChange}
+              style={{ fontFamily: 'var(--body)' }}
+            />
           </div>
-        </div>
-        <div className="nav-links">
-          <LiquidNavbar
-            tone="light"
-            items={navSections}
-            active={Math.max(0, navSections.findIndex((section) => section.id === activeSection))}
-            onChange={handleNavChange}
-            style={{ fontFamily: 'var(--body)' }}
-          />
-        </div>
-        <LiquidMetalButton
-          label="Start a project"
-          onClick={() => window.location.assign('#connect')}
-        />
-      </header>
+          <motion.div
+            className="nav-cta"
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.08, ease }}
+          >
+            <LiquidMetalButton
+              label="Start a project"
+              onClick={() => window.location.assign('#connect')}
+            />
+          </motion.div>
+        </header>
+      </MotionConfig>
 
       <main>
         <section id="home" className="hero" data-section>
@@ -627,8 +724,8 @@ function App() {
                 text="I design and build *scalable* backend systems that power *reliable* digital products."
               />
               <motion.p className="lede" {...fadeUp(0.3)}>
-                Backend and DevOps engineer specializing in microservices, cloud-native architecture,
-                containerized deployments, and resilient distributed systems.
+                Full-stack developer at Meyvex Media and M.Tech (Integrated) AI &amp; DS student, building distributed
+                backend systems and microservices with Java, Spring Boot, Kafka, Redis, Docker and Kubernetes.
               </motion.p>
               <motion.div className="hero-actions" {...fadeUp(0.35)}>
                 <LiquidMetalButton label="Explore my work" onClick={() => window.location.assign('#projects')} />
@@ -638,7 +735,12 @@ function App() {
                 {heroMetrics.map((metric, i) => (
                   <motion.div key={metric.label} className="metric" {...fadeUp(0.4 + 0.05 * i)}>
                     <Hairline delay={0.4 + 0.06 * i} />
-                    <CountUp value={metric.value} suffix={metric.suffix} />
+                    <CountUp
+                      value={metric.value}
+                      prefix={metric.prefix}
+                      suffix={metric.suffix}
+                      decimals={metric.decimals}
+                    />
                     <p className="metric-label">{metric.label}</p>
                   </motion.div>
                 ))}
@@ -738,7 +840,7 @@ function App() {
             <div className="section-intro">
               <RevealTitle text="Experience, skills & education." />
               <motion.p className="panel-lede" {...fadeUp(0.175)}>
-                Designing and operating scalable backend systems, from first commit to production.
+                Building distributed backend systems with a focus on system design, observability, and code that holds up.
               </motion.p>
             </div>
 
@@ -823,10 +925,25 @@ function App() {
                         <TimelineRow
                           key={entry.school}
                           index={i}
-                          meta={[entry.period]}
-                          title={entry.school}
-                          sub={entry.credential}
+                          meta={entry.location ? [entry.period, entry.location] : [entry.period]}
+                          title={entry.degree}
+                          sub={entry.school}
                           text={entry.note}
+                        />
+                      ))}
+                    </Timeline>
+                  )}
+
+                  {resumeTab === 'Achievements' && (
+                    <Timeline>
+                      {achievements.map((item, i) => (
+                        <TimelineRow
+                          key={item.title}
+                          index={i}
+                          meta={item.meta}
+                          title={item.title}
+                          sub={item.issuer}
+                          text={item.note}
                         />
                       ))}
                     </Timeline>
@@ -893,7 +1010,7 @@ function App() {
                   </div>
                   <div>
                     <dt>Works</dt>
-                    <dd>Remote</dd>
+                    <dd>On-site &amp; remote</dd>
                   </div>
                   <div>
                     <dt>Local time</dt>

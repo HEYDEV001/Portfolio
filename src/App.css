@@ -6,51 +6,172 @@
   cursor: url("/src/assets/cursor.png") 2 2, auto;
 }
 
+/* Header: stays transparent so the liquid navbar refracts the page itself; it only tightens on scroll */
 .nav {
   position: sticky;
   top: 0;
   z-index: 10;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  padding: 20px 6vw;
+  gap: 24px;
+  padding: 22px 6vw;
+  transition: padding 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.nav.is-scrolled {
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--surface-strong);
-  color: var(--surface);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.brand-title {
-  margin: 0;
-  font-family: 'Fraunces', serif;
-  font-size: 18px;
-  color: var(--text-strong);
-}
-
-.brand-sub {
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-muted);
+.scroll-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+  pointer-events: none;
 }
 
 .nav-links {
   display: flex;
   justify-content: center;
+}
+
+.nav-cta {
+  justify-self: end;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+  cursor: url("/src/assets/cursor.png") 4 4, pointer;
+}
+
+.brand-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 8px 20px rgba(0, 0, 0, 0.16);
+  transition:
+    width 500ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 500ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Dashed orbit that swings in on hover, echoing the hero */
+.brand-mark::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity 400ms ease,
+    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand:hover .brand-mark {
+  transform: rotate(-10deg) scale(1.05);
+}
+
+.brand:hover .brand-mark::after {
+  opacity: 1;
+  transform: scale(1) rotate(120deg);
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 999px;
+}
+
+.brand-text {
+  display: grid;
+  gap: 2px;
+}
+
+.brand-title {
+  display: block;
+  height: 1.2em;
+  overflow: hidden;
+  font-family: var(--heading);
+  font-size: 17px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--text-strong);
+}
+
+/* Name rolls up to a copy of itself on hover */
+.text-roll {
+  display: block;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.text-roll::after {
+  content: attr(data-text);
+  display: block;
+  font-style: italic;
+}
+
+.brand:hover .text-roll {
+  transform: translateY(-50%);
+}
+
+.brand-sub {
+  position: relative;
+  display: block;
+  height: 16px;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--text-muted);
+  transition:
+    height 500ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 300ms ease;
+}
+
+.brand-sub-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.brand-sub .status-dot {
+  width: 6px;
+  height: 6px;
+}
+
+.nav.is-scrolled .brand-sub {
+  height: 0;
+  opacity: 0;
+}
+
+.nav.is-scrolled .brand-mark {
+  width: 36px;
+  height: 36px;
 }
 
 .cta {
@@ -162,6 +283,14 @@ section {
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   color: var(--text-strong);
+}
+
+.metric-prefix {
+  margin-right: 4px;
+  font-size: 0.45em;
+  letter-spacing: 0;
+  color: var(--text-muted);
+  vertical-align: 0.9em;
 }
 
 .metric-suffix {
@@ -1499,13 +1628,13 @@ section {
 
 @media (max-width: 1024px) {
   .nav {
-    flex-wrap: wrap;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
   }
 
   .nav-links {
-    order: 3;
-    width: 100%;
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   main {
@@ -1586,6 +1715,10 @@ section {
 }
 
 @media (max-width: 720px) {
+  .brand-sub {
+    font-size: 11px;
+  }
+
   .cta {
     width: 100%;
     text-align: center;
@@ -1633,6 +1766,20 @@ section {
   .text-tabs {
     gap: 24px;
     margin-top: 44px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .text-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .text-tabs button {
+    flex: none;
+  }
+
+  .tab-line {
+    bottom: 0;
   }
 
   .text-tabs button {

@@ -1476,11 +1476,19 @@ section {
   transform: scaleY(1);
 }
 
-.social-index {
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
-  transition: color 450ms ease;
+/* The logo is a mask filled with currentColor, so it inverts with the row on hover */
+.social-icon {
+  width: 22px;
+  height: 22px;
+  background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+  transition: transform 550ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.social-row:hover .social-icon,
+.social-row:focus-visible .social-icon {
+  transform: scale(1.12) rotate(-8deg);
 }
 
 .social-name {
@@ -1498,9 +1506,7 @@ section {
   transition: color 450ms ease;
 }
 
-.social-row:hover .social-index,
 .social-row:hover .social-handle,
-.social-row:focus-visible .social-index,
 .social-row:focus-visible .social-handle {
   color: var(--text-on-dark-muted);
 }

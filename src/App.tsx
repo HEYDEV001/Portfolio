@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import { memo, useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
 import {
   AnimatePresence,
   MotionConfig,
@@ -13,6 +13,10 @@ import {
 import { ArrowDown, ArrowUpRight, Check, Copy, FileText, FolderGit2 } from 'lucide-react'
 import './App.css'
 import avatar from '@/assets/avatar.jpg'
+import githubIcon from '@/assets/social/github.png'
+import instagramIcon from '@/assets/social/instagram.png'
+import linkedinIcon from '@/assets/social/linkedin.png'
+import xIcon from '@/assets/social/x.png'
 import { LiquidMetalButton } from '@/components/ui/liquid-metal-button'
 import { AuroraBackground } from '@/components/ui/aurora-background'
 import { SystemOrbit } from '@/components/ui/system-orbit'
@@ -65,6 +69,7 @@ type Social = {
   name: string
   handle: string
   url: string
+  icon: string
 }
 
 const navSections: (LiquidNavItem & { id: string })[] = [
@@ -246,21 +251,25 @@ const socials: Social[] = [
     name: 'LinkedIn',
     handle: 'linkedin.com/in/dev-pathak',
     url: 'https://www.linkedin.com/in/dev-pathak-17b067296/',
+    icon: linkedinIcon,
   },
   {
     name: 'GitHub',
     handle: 'github.com/HEYDEV001',
     url: 'https://github.com/HEYDEV001',
+    icon: githubIcon,
   },
   {
     name: 'X (Twitter)',
     handle: 'x.com/HEYDEV001',
     url: 'https://x.com/HEYDEV001',
+    icon: xIcon,
   },
   {
     name: 'Instagram',
     handle: 'instagram.com/devvvvvvv.p',
     url: 'https://www.instagram.com/devvvvvvv.p/',
+    icon: instagramIcon,
   },
 ]
 
@@ -1040,7 +1049,11 @@ function App() {
                       transition={{ duration: 0.5, delay: 0.05 * i, ease }}
                     >
                       <a className="social-row" href={social.url} target="_blank" rel="noreferrer">
-                        <span className="social-index">{String(i + 1).padStart(2, '0')}</span>
+                        <span
+                          className="social-icon"
+                          aria-hidden="true"
+                          style={{ '--icon': `url(${social.icon})` } as CSSProperties}
+                        />
                         <span className="social-name">{social.name}</span>
                         <span className="social-handle">{social.handle}</span>
                         <ArrowUpRight className="social-arrow" size={20} />

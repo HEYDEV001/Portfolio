@@ -427,7 +427,8 @@ const ProjectRow = memo(function ProjectRow({ project, index }: { project: Proje
         <div className="project-heading">
           <h3 className="project-title">
             <a className="project-link" href={project.repo} target="_blank" rel="noreferrer">
-              {project.title}
+              {/* The slide lives on this span: a transform on the link or title would shrink its row-wide hit area */}
+              <span className="project-title-text">{project.title}</span>
             </a>
           </h3>
           <span className="project-tag">{project.tag}</span>
